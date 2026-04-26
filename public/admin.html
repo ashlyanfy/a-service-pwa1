@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A-SERVICE — Админ-панель</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0c1d;
+      --card: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.1);
+      --text: #f7f6fb;
+      --muted: #a09bc0;
+      --brand: #6a58d7;
+      --brand-light: #a89af6;
+      --danger: #f87171;
+      --success: #4ade80;
+      --radius: 16px;
+      --sidebar-w: 240px;
+      --header-h: 60px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+    body {
+      font-family: Inter, sans-serif;
+      background: linear-gradient(135deg, #0d0a19 0%, #120d23 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ════════════════════ LOGIN ════════════════════ */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 32px;
+      backdrop-filter: blur(12px);
+    }
+    .login-logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, var(--brand-light), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .login-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+    .field input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: Inter, sans-serif;
+      outline: none;
+      transition: border-color .2s;
+      -webkit-appearance: none;
+    }
+    .field input:focus { border-color: var(--brand); }
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--brand), #4f3ab5);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s;
+      font-family: Inter, sans-serif;
+    }
+    .btn-primary:hover { opacity: .88; }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+    #login-error { color: var(--danger); font-size: 13px; margin-top: 12px; text-align: center; min-height: 18px; }
+
+    /* ════════════════════ APP SHELL ════════════════════ */
+    #admin-app { display: none; min-height: 100vh; }
+
+    /* ── Mobile header ── */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: rgba(13,10,25,0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      z-index: 50;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    .mobile-logo {
+      font-size: 16px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--brand-light), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .mobile-section-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      flex: 1;
+      text-align: center;
+    }
+    .hamburger {
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .hamburger svg { display: block; }
+
+    /* ── Drawer overlay ── */
+    .drawer-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(2px);
+      z-index: 60;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+    .drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* ── Drawer ── */
+    .drawer {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 260px;
+      background: #130f24;
+      border-right: 1px solid var(--border);
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px;
+      transform: translateX(-100%);
+      transition: transform .28s cubic-bezier(0.25,1,0.5,1);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding: 0 4px;
+    }
+    .drawer-logo {
+      font-size: 17px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--brand-light), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .drawer-close {
+      width: 30px; height: 30px;
+      background: rgba(255,255,255,0.06);
+      border: none;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+    .drawer-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+
+    /* ════════════════════ SIDEBAR (desktop) ════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: rgba(255,255,255,0.04);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 10;
+    }
+    .sidebar-logo {
+      font-size: 17px;
+      font-weight: 800;
+      padding: 0 8px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--brand-light), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sidebar-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+
+    /* ── Nav items (shared sidebar + drawer) ── */
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: background .15s, color .15s;
+      margin-bottom: 2px;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: Inter, sans-serif;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .nav-item.active { background: rgba(106,88,215,0.2); color: var(--brand-light); }
+    .nav-item svg { flex-shrink: 0; opacity: .7; }
+    .nav-item.active svg { opacity: 1; }
+
+    .sidebar-spacer { flex: 1; }
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--danger);
+      border: 1px solid rgba(248,113,113,0.2);
+      background: rgba(248,113,113,0.06);
+      width: 100%;
+      font-family: Inter, sans-serif;
+      transition: background .15s;
+    }
+    .btn-logout:hover { background: rgba(248,113,113,0.12); }
+
+    /* ════════════════════ MAIN ════════════════════ */
+    .main {
+      margin-left: var(--sidebar-w);
+      padding: 36px 32px;
+      max-width: calc(var(--sidebar-w) + 800px);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .page-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .page-desc { color: var(--muted); font-size: 13px; margin-bottom: 24px; line-height: 1.5; }
+
+    /* ════════════════════ CARDS & FORMS ════════════════════ */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 14px;
+    }
+    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--brand-light); }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 13px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: Inter, sans-serif;
+      outline: none;
+      transition: border-color .2s;
+      -webkit-appearance: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--brand); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* ════════════════════ BUTTONS ════════════════════ */
+    .btn {
+      padding: 10px 18px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: Inter, sans-serif;
+      transition: opacity .15s, background .15s;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-save { background: linear-gradient(135deg, var(--brand), #4f3ab5); color: #fff; }
+    .btn-save:hover:not(:disabled) { opacity: .85; }
+    .btn-danger { background: rgba(248,113,113,0.1); color: var(--danger); border: 1px solid rgba(248,113,113,0.22); }
+    .btn-danger:hover:not(:disabled) { background: rgba(248,113,113,0.18); }
+    .btn-ghost { background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+    .btn-edit { background: rgba(106,88,215,0.12); color: var(--brand-light); border: 1px solid rgba(106,88,215,0.25); }
+    .btn-edit:hover { background: rgba(106,88,215,0.2); }
+    .btn-add {
+      background: rgba(106,88,215,0.1);
+      color: var(--brand-light);
+      border: 1.5px dashed rgba(106,88,215,0.35);
+      width: 100%;
+      padding: 13px;
+      font-size: 14px;
+      border-radius: var(--radius);
+      margin-bottom: 14px;
+      cursor: pointer;
+      font-family: Inter, sans-serif;
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .btn-add:hover { background: rgba(106,88,215,0.18); }
+
+    /* ════════════════════ PORTFOLIO LIST ════════════════════ */
+    .portfolio-list { display: flex; flex-direction: column; gap: 10px; }
+    .portfolio-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      grid-template-rows: auto auto;
+      gap: 0 14px;
+    }
+    .portfolio-item-img {
+      grid-row: 1 / 3;
+      width: 72px; height: 54px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      flex-shrink: 0;
+    }
+    .portfolio-item-info { align-self: center; min-width: 0; }
+    .portfolio-item-info strong { display: block; font-size: 14px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .portfolio-item-info span { font-size: 12px; color: var(--muted); }
+    .portfolio-item-actions { display: flex; gap: 8px; align-self: center; flex-wrap: wrap; }
+
+    /* ════════════════════ TOAST ════════════════════ */
+    #toast {
+      position: fixed;
+      bottom: 24px; right: 20px;
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 200;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+      max-width: calc(100vw - 40px);
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.success { background: rgba(74,222,128,0.15); border: 1px solid rgba(74,222,128,0.3); color: var(--success); }
+    #toast.error { background: rgba(248,113,113,0.15); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
+
+    /* ════════════════════ MODAL ════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #1a1530;
+      border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 32px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal-handle {
+      width: 40px; height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-title { font-size: 17px; font-weight: 700; }
+    .modal-close {
+      width: 30px; height: 30px;
+      background: rgba(255,255,255,0.06);
+      border: none; border-radius: 8px;
+      color: var(--muted); cursor: pointer;
+      font-size: 18px;
+      display: grid; place-items: center;
+    }
+    .modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-footer .btn { flex: 1; padding: 13px; font-size: 14px; }
+
+    /* ── Upload ── */
+    .upload-area {
+      border: 2px dashed rgba(106,88,215,0.35);
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .upload-area:hover { border-color: var(--brand); background: rgba(106,88,215,0.05); }
+    .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .upload-preview { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; margin-top: 8px; display: none; }
+    .upload-text { font-size: 13px; color: var(--muted); }
+    .upload-text strong { color: var(--brand-light); }
+
+    /* ── Icon picker ── */
+    .icon-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+    .icon-opt {
+      width: 46px; height: 46px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      cursor: pointer;
+      display: grid; place-items: center;
+      color: var(--muted);
+      transition: border-color .15s, background .15s, color .15s;
+    }
+    .icon-opt:hover { border-color: var(--brand); }
+    .icon-opt.selected { border-color: var(--brand); background: rgba(106,88,215,0.18); color: var(--brand-light); }
+
+    /* ════════════════════ RESPONSIVE ════════════════════ */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .mobile-header { display: flex; }
+      .main {
+        margin-left: 0;
+        padding: 16px 16px 32px;
+        padding-top: calc(var(--header-h) + 20px);
+        max-width: 100%;
+      }
+      .page-title { font-size: 19px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .portfolio-item-actions { gap: 6px; }
+      .portfolio-item-actions .btn { padding: 8px 12px; font-size: 12px; }
+      #toast { bottom: 80px; right: 12px; left: 12px; text-align: center; }
+      .modal-overlay { align-items: flex-end; }
+      .modal { border-radius: 20px 20px 0 0; padding-bottom: 40px; }
+    }
+
+    @media (min-width: 769px) {
+      .modal-overlay { align-items: center; padding: 24px; }
+      .modal { border-radius: 20px; max-width: 520px; padding: 28px; }
+      .modal-handle { display: none; }
+      .modal-footer .btn { flex: none; }
+      .modal-footer { justify-content: flex-end; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ LOGIN ════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">A-SERVICE</div>
+    <p class="login-subtitle">Панель управления сайтом</p>
+    <div class="field">
+      <label>Email</label>
+      <input id="login-email" type="email" placeholder="admin@example.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Пароль</label>
+      <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="login-btn">Войти</button>
+    <div id="login-error"></div>
+  </div>
+</div>
+
+<!-- ════ ADMIN APP ════ -->
+<div id="admin-app">
+
+  <!-- Mobile header -->
+  <div class="mobile-header">
+    <div class="mobile-logo">A-SERVICE</div>
+    <div class="mobile-section-name" id="mobile-section-name">Контакты</div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Меню">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Drawer overlay -->
+  <div class="drawer-overlay" id="drawer-overlay"></div>
+
+  <!-- Drawer (mobile nav) -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo">A-SERVICE Admin</div>
+      <button class="drawer-close" id="drawer-close">✕</button>
+    </div>
+    <div class="drawer-label">Разделы</div>
+    <button class="nav-item drawer-nav active" data-tab="contacts">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Контакты
+    </button>
+    <button class="nav-item drawer-nav" data-tab="portfolio">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Портфолио
+    </button>
+    <button class="nav-item drawer-nav" data-tab="extra">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Доп. услуги
+    </button>
+    <button class="nav-item drawer-nav" data-tab="texts">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Тексты сайта
+    </button>
+    <button class="nav-item drawer-nav" data-tab="services">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M12 11v4M10 13h4"/></svg>
+      Услуги
+    </button>
+    <button class="nav-item drawer-nav" data-tab="stats">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Статистика
+    </button>
+    <button class="nav-item drawer-nav" data-tab="for-whom">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Для кого
+    </button>
+    <button class="nav-item drawer-nav" data-tab="why">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Почему нас
+    </button>
+    <button class="nav-item drawer-nav" data-tab="clients">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+      Банки
+    </button>
+    <button class="nav-item drawer-nav" data-tab="process">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Процесс
+    </button>
+    <div class="sidebar-spacer"></div>
+    <button class="btn-logout" id="drawer-logout">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Выйти
+    </button>
+  </div>
+
+  <div class="admin-layout" style="display:flex;min-height:100vh;">
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">A-SERVICE Admin</div>
+      <div class="sidebar-label">Разделы</div>
+      <button class="nav-item sidebar-nav active" data-tab="contacts">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        Контакты
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="portfolio">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Портфолио
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="extra">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        Доп. услуги
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="texts">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Тексты сайта
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="services">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M12 11v4M10 13h4"/></svg>
+        Услуги
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="stats">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Статистика
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="for-whom">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Для кого
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="why">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Почему нас
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="clients">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        Банки
+      </button>
+      <button class="nav-item sidebar-nav" data-tab="process">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        Процесс
+      </button>
+      <div class="sidebar-spacer"></div>
+      <button class="btn-logout" id="logout-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Выйти
+      </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+      <!-- CONTACTS -->
+      <div class="tab-panel active" id="tab-contacts">
+        <div class="page-title">Контакты</div>
+        <p class="page-desc">Изменения сразу появятся на сайте после сохранения</p>
+        <div class="card">
+          <div class="form-group">
+            <label>Телефон</label>
+            <input id="c-phone" type="tel" placeholder="+7 777 000 00 00" inputmode="tel">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input id="c-email" type="email" placeholder="info@example.com" inputmode="email">
+          </div>
+          <div class="form-group">
+            <label>Контактное лицо</label>
+            <input id="c-person" type="text" placeholder="Иванов Иван, директор">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp номер (для заявок из кабинета)</label>
+            <input id="c-whatsapp" type="text" placeholder="77777294964" inputmode="numeric">
+          </div>
+          <button class="btn btn-save" id="save-contacts" style="width:100%;padding:13px;font-size:14px;margin-top:4px;">Сохранить контакты</button>
+        </div>
+      </div>
+
+      <!-- PORTFOLIO -->
+      <div class="tab-panel" id="tab-portfolio">
+        <div class="page-title">Портфолио</div>
+        <p class="page-desc">Карточки кейсов в карусели на главной странице</p>
+        <button class="btn-add" id="add-portfolio-btn">+ Добавить карточку</button>
+        <div class="portfolio-list" id="portfolio-list">
+          <div style="color:var(--muted);font-size:14px;text-align:center;padding:32px 0;">Загрузка...</div>
+        </div>
+      </div>
+
+      <!-- EXTRA SERVICES -->
+      <div class="tab-panel" id="tab-extra">
+        <div class="page-title">Дополнительные услуги</div>
+        <p class="page-desc">Три карточки в разделе «Дополнительные услуги»</p>
+        <div id="extra-cards"></div>
+        <button class="btn btn-save" id="save-extra" style="width:100%;padding:13px;font-size:14px;">Сохранить изменения</button>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="tab-panel" id="tab-services">
+        <div class="page-title">Услуги</div>
+        <p class="page-desc">6 карточек в разделе «Что мы делаем» на главной странице</p>
+        <div id="services-cards"></div>
+        <button class="btn btn-save" id="save-services" style="width:100%;padding:13px;font-size:14px;">Сохранить услуги</button>
+      </div>
+
+      <!-- STATS -->
+      <div class="tab-panel" id="tab-stats">
+        <div class="page-title">Статистика</div>
+        <p class="page-desc">Три цифры в блоке героя на главной странице</p>
+        <div class="card">
+          <div class="card-title">Цифра 1</div>
+          <div class="form-row">
+            <div class="form-group"><label>Значение</label><input id="st1-val" type="text" placeholder="10 000+"></div>
+            <div class="form-group"><label>Подпись</label><input id="st1-label" type="text" placeholder="установок и обслуживаний..."></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Цифра 2</div>
+          <div class="form-row">
+            <div class="form-group"><label>Значение</label><input id="st2-val" type="text" placeholder="с 2012"></div>
+            <div class="form-group"><label>Подпись</label><input id="st2-label" type="text" placeholder="работаем на рынке Казахстана"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Цифра 3</div>
+          <div class="form-row">
+            <div class="form-group"><label>Значение</label><input id="st3-val" type="text" placeholder="24/7"></div>
+            <div class="form-group"><label>Подпись</label><input id="st3-label" type="text" placeholder="оперативная логистика..."></div>
+          </div>
+        </div>
+        <button class="btn btn-save" id="save-stats" style="width:100%;padding:13px;font-size:14px;">Сохранить статистику</button>
+      </div>
+
+      <!-- FOR WHOM -->
+      <div class="tab-panel" id="tab-for-whom">
+        <div class="page-title">Для кого</div>
+        <p class="page-desc">Заголовок раздела и три карточки клиентов</p>
+        <div class="card">
+          <div class="form-group">
+            <label>Заголовок раздела</label>
+            <textarea id="fw-title" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Карточка 1</div>
+          <div class="form-group"><label>Заголовок</label><input id="fw-c1-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="fw-c1-desc" rows="2"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Карточка 2</div>
+          <div class="form-group"><label>Заголовок</label><input id="fw-c2-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="fw-c2-desc" rows="2"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Карточка 3</div>
+          <div class="form-group"><label>Заголовок</label><input id="fw-c3-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="fw-c3-desc" rows="2"></textarea></div>
+        </div>
+        <button class="btn btn-save" id="save-for-whom" style="width:100%;padding:13px;font-size:14px;">Сохранить</button>
+      </div>
+
+      <!-- WHY US -->
+      <div class="tab-panel" id="tab-why">
+        <div class="page-title">Почему выбирают нас</div>
+        <p class="page-desc">Заголовок раздела и четыре карточки преимуществ</p>
+        <div class="card">
+          <div class="form-group">
+            <label>Заголовок раздела</label>
+            <textarea id="why-title" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Карточка 1</div>
+          <div class="form-group"><label>Заголовок</label><input id="why-c1-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="why-c1-desc" rows="2"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Карточка 2</div>
+          <div class="form-group"><label>Заголовок</label><input id="why-c2-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="why-c2-desc" rows="2"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Карточка 3</div>
+          <div class="form-group"><label>Заголовок</label><input id="why-c3-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="why-c3-desc" rows="2"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Карточка 4</div>
+          <div class="form-group"><label>Заголовок</label><input id="why-c4-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="why-c4-desc" rows="2"></textarea></div>
+        </div>
+        <button class="btn btn-save" id="save-why" style="width:100%;padding:13px;font-size:14px;">Сохранить</button>
+      </div>
+
+      <!-- CLIENTS / BANKS -->
+      <div class="tab-panel" id="tab-clients">
+        <div class="page-title">Банки</div>
+        <p class="page-desc">Заголовок раздела «Клиенты и партнёры»</p>
+        <div class="card">
+          <div class="form-group">
+            <label>Заголовок раздела</label>
+            <input id="cl-title" type="text" placeholder="Банки, которые нам доверяют">
+          </div>
+          <button class="btn btn-save" id="save-clients" style="width:100%;padding:13px;font-size:14px;margin-top:4px;">Сохранить</button>
+        </div>
+      </div>
+
+      <!-- PROCESS -->
+      <div class="tab-panel" id="tab-process">
+        <div class="page-title">Как мы работаем</div>
+        <p class="page-desc">Заголовок и 4 шага процесса</p>
+        <div class="card">
+          <div class="form-group">
+            <label>Заголовок раздела</label>
+            <textarea id="pr-title" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Шаг 1</div>
+          <div class="form-group"><label>Название</label><input id="pr-s1-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="pr-s1-desc" rows="3"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Шаг 2</div>
+          <div class="form-group"><label>Название</label><input id="pr-s2-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="pr-s2-desc" rows="3"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Шаг 3</div>
+          <div class="form-group"><label>Название</label><input id="pr-s3-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="pr-s3-desc" rows="3"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Шаг 4</div>
+          <div class="form-group"><label>Название</label><input id="pr-s4-title" type="text"></div>
+          <div class="form-group"><label>Описание</label><textarea id="pr-s4-desc" rows="3"></textarea></div>
+        </div>
+        <button class="btn btn-save" id="save-process" style="width:100%;padding:13px;font-size:14px;">Сохранить</button>
+      </div>
+
+      <!-- SITE TEXTS -->
+      <div class="tab-panel" id="tab-texts">
+        <div class="page-title">Тексты сайта</div>
+        <p class="page-desc">Тексты на главной странице. Поддерживается HTML: &lt;em&gt;курсив&lt;/em&gt;, &lt;br&gt;</p>
+        <div class="card">
+          <div class="form-group">
+            <label>Главный заголовок</label>
+            <textarea id="t-hero-headline" rows="2" placeholder="Надёжный подрядчик..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Подзаголовок</label>
+            <textarea id="t-hero-sub" rows="4" placeholder="Монтаж, демонтаж..."></textarea>
+          </div>
+          <button class="btn btn-save" id="save-texts" style="width:100%;padding:13px;font-size:14px;margin-top:4px;">Сохранить тексты</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ════ PORTFOLIO MODAL ════ -->
+<div class="modal-overlay" id="portfolio-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Добавить карточку</div>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Год</label>
+        <input id="m-year" type="text" placeholder="2024" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label>Позиция (порядок)</label>
+        <input id="m-position" type="number" placeholder="0" min="0" inputmode="numeric">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Заголовок</label>
+      <input id="m-title" type="text" placeholder="Название кейса">
+    </div>
+    <div class="form-group">
+      <label>Описание</label>
+      <textarea id="m-subtitle" rows="3" placeholder="Краткое описание проекта..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Фото</label>
+      <div class="upload-area">
+        <input type="file" id="m-file" accept="image/*">
+        <div class="upload-text"><strong>Нажмите для выбора фото</strong><br><span style="font-size:11px;margin-top:4px;display:block;opacity:.7">JPG, PNG, WebP до 5 МБ</span></div>
+      </div>
+      <img class="upload-preview" id="upload-preview" src="" alt="">
+      <div class="form-group" style="margin-top:8px;margin-bottom:0">
+        <label style="font-size:11px">или вставьте URL изображения</label>
+        <input id="m-image-url" type="url" placeholder="https://... или /assets/photo.webp" inputmode="url">
+      </div>
+    </div>
+    <input type="hidden" id="m-id">
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modal-cancel">Отмена</button>
+      <button class="btn btn-save" id="modal-save">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const sb = createClient(
+  'https://szffyfwjwdlystyxenpo.supabase.co',
+  'sb_publishable_Z3tVIZYoRzFzRLpKaofoHw_oGG0wmgW'
+);
+
+const SECTION_NAMES = { contacts: 'Контакты', portfolio: 'Портфолио', extra: 'Доп. услуги', texts: 'Тексты сайта', services: 'Услуги', stats: 'Статистика', 'for-whom': 'Для кого', why: 'Почему нас', clients: 'Банки', process: 'Процесс' };
+
+// ── TOAST ──
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  setTimeout(() => el.className = '', 3000);
+}
+
+// ── DRAWER ──
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('hamburger-btn').addEventListener('click', openDrawer);
+document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+document.getElementById('drawer-overlay').addEventListener('click', closeDrawer);
+
+// ── TAB SWITCHING ──
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  document.querySelectorAll(`[data-tab="${name}"]`).forEach(el => el.classList.add('active'));
+  document.getElementById('mobile-section-name').textContent = SECTION_NAMES[name] || '';
+  closeDrawer();
+  if (name === 'portfolio') loadPortfolio();
+  if (name === 'extra') loadExtra();
+  if (name === 'contacts') loadContacts();
+  if (name === 'texts') loadTexts();
+  if (name === 'services') loadServices();
+  if (name === 'stats') loadStats();
+  if (name === 'for-whom') loadForWhom();
+  if (name === 'why') loadWhy();
+  if (name === 'clients') loadClients();
+  if (name === 'process') loadProcess();
+}
+
+document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => showTab(btn.dataset.tab));
+});
+
+// ── AUTH ──
+async function checkSession() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) showApp();
+}
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('login-btn');
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  const err   = document.getElementById('login-error');
+  err.textContent = '';
+  if (!email || !pass) { err.textContent = 'Заполните email и пароль'; return; }
+  btn.disabled = true; btn.textContent = 'Вход...';
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    err.textContent = 'Неверный email или пароль';
+    btn.disabled = false; btn.textContent = 'Войти';
+  } else { showApp(); }
+});
+document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-password').focus(); });
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-btn').click(); });
+
+async function doLogout() {
+  await sb.auth.signOut();
+  document.getElementById('admin-app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+document.getElementById('logout-btn').addEventListener('click', doLogout);
+document.getElementById('drawer-logout').addEventListener('click', doLogout);
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-app').style.display = 'block';
+  loadContacts();
+}
+
+// ── CONTACTS ──
+async function loadContacts() {
+  const { data } = await sb.from('contacts').select('*');
+  if (!data) return;
+  const map = Object.fromEntries(data.map(r => [r.key, r.value]));
+  document.getElementById('c-phone').value    = map.phone || '';
+  document.getElementById('c-email').value    = map.email || '';
+  document.getElementById('c-person').value   = map.contact_person || '';
+  document.getElementById('c-whatsapp').value = map.whatsapp || '';
+}
+
+document.getElementById('save-contacts').addEventListener('click', async () => {
+  const btn = document.getElementById('save-contacts');
+  btn.disabled = true; btn.textContent = 'Сохранение...';
+  const rows = [
+    { key: 'phone',          value: document.getElementById('c-phone').value.trim(),    label: 'Телефон' },
+    { key: 'email',          value: document.getElementById('c-email').value.trim(),    label: 'Email' },
+    { key: 'contact_person', value: document.getElementById('c-person').value.trim(),   label: 'Контактное лицо' },
+    { key: 'whatsapp',       value: document.getElementById('c-whatsapp').value.trim(), label: 'WhatsApp' },
+  ];
+  const { error } = await sb.from('contacts').upsert(rows, { onConflict: 'key' });
+  btn.disabled = false; btn.textContent = 'Сохранить контакты';
+  error ? toast('Ошибка: ' + error.message, 'error') : toast('Контакты сохранены ✓');
+});
+
+// ── PORTFOLIO ──
+async function loadPortfolio() {
+  const list = document.getElementById('portfolio-list');
+  list.innerHTML = '<div style="color:var(--muted);font-size:14px;text-align:center;padding:32px 0;">Загрузка...</div>';
+  const { data, error } = await sb.from('portfolio').select('*').order('position');
+  if (error) { list.innerHTML = `<div style="color:var(--danger);font-size:14px;padding:16px">${error.message}</div>`; return; }
+  if (!data.length) { list.innerHTML = '<div style="color:var(--muted);font-size:14px;text-align:center;padding:32px 0;">Карточек нет. Нажмите «+ Добавить».</div>'; return; }
+  list.innerHTML = data.map(c => `
+    <div class="portfolio-item" data-id="${c.id}">
+      <img class="portfolio-item-img" src="${c.image_url || ''}" onerror="this.style.opacity='.2'" alt="">
+      <div class="portfolio-item-info">
+        <strong>${c.title}</strong>
+        <span>${c.year} · позиция ${c.position}</span>
+      </div>
+      <div class="portfolio-item-actions">
+        <button class="btn btn-edit" onclick="editCard('${c.id}')">Изменить</button>
+        <button class="btn btn-danger" onclick="deleteCard('${c.id}')">Удалить</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('add-portfolio-btn').addEventListener('click', () => openModal(null));
+
+window.editCard = async (id) => {
+  const { data } = await sb.from('portfolio').select('*').eq('id', id).single();
+  if (data) openModal(data);
+};
+window.deleteCard = async (id) => {
+  if (!confirm('Удалить эту карточку?')) return;
+  const { error } = await sb.from('portfolio').delete().eq('id', id);
+  error ? toast('Ошибка: ' + error.message, 'error') : (toast('Карточка удалена'), loadPortfolio());
+};
+
+// ── MODAL ──
+let uploadedUrl = '';
+
+function openModal(card) {
+  document.getElementById('m-id').value       = card?.id || '';
+  document.getElementById('m-year').value     = card?.year || '';
+  document.getElementById('m-position').value = card?.position ?? '';
+  document.getElementById('m-title').value    = card?.title || '';
+  document.getElementById('m-subtitle').value = card?.subtitle || '';
+  document.getElementById('m-image-url').value = card?.image_url || '';
+  document.getElementById('modal-title').textContent = card ? 'Изменить карточку' : 'Добавить карточку';
+  const prev = document.getElementById('upload-preview');
+  prev.src = card?.image_url || '';
+  prev.style.display = card?.image_url ? 'block' : 'none';
+  document.getElementById('m-file').value = '';
+  uploadedUrl = card?.image_url || '';
+  document.getElementById('portfolio-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('portfolio-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+document.getElementById('portfolio-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+document.getElementById('m-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const prev = document.getElementById('upload-preview');
+  prev.src = URL.createObjectURL(file);
+  prev.style.display = 'block';
+  const saveBtn = document.getElementById('modal-save');
+  saveBtn.disabled = true; saveBtn.textContent = 'Загрузка...';
+  const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  const { data, error } = await sb.storage.from('portfolio').upload(fileName, file, { upsert: true });
+  saveBtn.disabled = false; saveBtn.textContent = 'Сохранить';
+  if (error) { toast('Ошибка загрузки: ' + error.message, 'error'); return; }
+  const { data: urlData } = sb.storage.from('portfolio').getPublicUrl(data.path);
+  uploadedUrl = urlData.publicUrl;
+  document.getElementById('m-image-url').value = uploadedUrl;
+  toast('Фото загружено ✓');
+});
+
+document.getElementById('modal-save').addEventListener('click', async () => {
+  const id  = document.getElementById('m-id').value;
+  const row = {
+    year:      document.getElementById('m-year').value.trim(),
+    title:     document.getElementById('m-title').value.trim(),
+    subtitle:  document.getElementById('m-subtitle').value.trim(),
+    image_url: document.getElementById('m-image-url').value.trim() || uploadedUrl,
+    position:  parseInt(document.getElementById('m-position').value) || 0,
+  };
+  if (!row.title) { toast('Введите заголовок', 'error'); return; }
+  const saveBtn = document.getElementById('modal-save');
+  saveBtn.disabled = true; saveBtn.textContent = 'Сохранение...';
+  const { error } = id
+    ? await sb.from('portfolio').update(row).eq('id', id)
+    : await sb.from('portfolio').insert(row);
+  saveBtn.disabled = false; saveBtn.textContent = 'Сохранить';
+  if (error) toast('Ошибка: ' + error.message, 'error');
+  else { toast(id ? 'Карточка обновлена ✓' : 'Карточка добавлена ✓'); closeModal(); loadPortfolio(); }
+});
+
+// ── EXTRA SERVICES ──
+const ICONS_SVG = {
+  truck:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="20" height="20"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+  package: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="20" height="20"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>`,
+  users:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="20" height="20"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  box:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="20" height="20"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>`,
+  wrench:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="20" height="20"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>`,
+};
+
+async function loadExtra() {
+  const { data } = await sb.from('extra_services').select('*').order('position');
+  if (!data) return;
+  const container = document.getElementById('extra-cards');
+  container.innerHTML = data.map((s, i) => `
+    <div class="card" data-extra-id="${s.id}">
+      <div class="card-title">Карточка ${i + 1}</div>
+      <div class="form-group">
+        <label>Иконка</label>
+        <div class="icon-picker">
+          ${Object.entries(ICONS_SVG).map(([key, svg]) => `
+            <div class="icon-opt ${s.icon_name === key ? 'selected' : ''}" data-icon="${key}" data-idx="${i}" title="${key}">${svg}</div>
+          `).join('')}
+        </div>
+        <input type="hidden" class="extra-icon" value="${s.icon_name}">
+      </div>
+      <div class="form-group">
+        <label>Заголовок</label>
+        <input class="extra-title" type="text" value="${s.title}">
+      </div>
+      <div class="form-group">
+        <label>Описание</label>
+        <textarea class="extra-desc" rows="3">${s.description}</textarea>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.icon-opt').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = el.dataset.idx;
+      container.querySelectorAll(`.icon-opt[data-idx="${idx}"]`).forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      el.closest('.card').querySelector('.extra-icon').value = el.dataset.icon;
+    });
+  });
+}
+
+document.getElementById('save-extra').addEventListener('click', async () => {
+  const btn = document.getElementById('save-extra');
+  btn.disabled = true; btn.textContent = 'Сохранение...';
+  const updates = Array.from(document.querySelectorAll('#extra-cards .card[data-extra-id]')).map((card, i) => ({
+    id:          card.dataset.extraId,
+    position:    i,
+    icon_name:   card.querySelector('.extra-icon').value,
+    title:       card.querySelector('.extra-title').value.trim(),
+    description: card.querySelector('.extra-desc').value.trim(),
+  }));
+  const { error } = await sb.from('extra_services').upsert(updates, { onConflict: 'id' });
+  btn.disabled = false; btn.textContent = 'Сохранить изменения';
+  error ? toast('Ошибка: ' + error.message, 'error') : toast('Услуги сохранены ✓');
+});
+
+// ── SITE TEXTS ──
+async function loadTexts() {
+  const { data } = await sb.from('site_texts').select('*');
+  if (!data) return;
+  const map = Object.fromEntries(data.map(r => [r.key, r.value]));
+  document.getElementById('t-hero-headline').value = map.hero_headline || '';
+  document.getElementById('t-hero-sub').value      = map.hero_subheadline || '';
+}
+
+document.getElementById('save-texts').addEventListener('click', async () => {
+  const btn = document.getElementById('save-texts');
+  btn.disabled = true; btn.textContent = 'Сохранение...';
+  const rows = [
+    { key: 'hero_headline',    value: document.getElementById('t-hero-headline').value, section: 'hero', label: 'Главный заголовок' },
+    { key: 'hero_subheadline', value: document.getElementById('t-hero-sub').value,      section: 'hero', label: 'Подзаголовок' },
+  ];
+  const { error } = await sb.from('site_texts').upsert(rows, { onConflict: 'key' });
+  btn.disabled = false; btn.textContent = 'Сохранить тексты';
+  error ? toast('Ошибка: ' + error.message, 'error') : toast('Тексты сохранены ✓');
+});
+
+// ── SERVICES ──
+const SERVICE_KEYS = [
+  { key: 's1', label: 'Монтаж и демонтаж' },
+  { key: 's2', label: 'Логистика и такелаж' },
+  { key: 's3', label: 'Покраска и ребрендинг' },
+  { key: 's4', label: 'Пусконаладка и СКС' },
+  { key: 's5', label: 'Козырьки и подиумы' },
+  { key: 's6', label: 'Чистка и восстановление' },
+];
+
+async function loadServices() {
+  const { data } = await sb.from('site_texts').select('*').in('key', SERVICE_KEYS.flatMap(s => [`${s.key}_title`, `${s.key}_desc`]));
+  const map = Object.fromEntries((data ?? []).map(r => [r.key, r.value]));
+  const container = document.getElementById('services-cards');
+  container.innerHTML = SERVICE_KEYS.map((s, i) => `
+    <div class="card">
+      <div class="card-title">Карточка ${i + 1}</div>
+      <div class="form-group">
+        <label>Заголовок</label>
+        <input class="svc-title" data-key="${s.key}_title" type="text" value="${map[s.key + '_title'] || s.label}">
+      </div>
+      <div class="form-group">
+        <label>Описание</label>
+        <textarea class="svc-desc" data-key="${s.key}_desc" rows="2">${map[s.key + '_desc'] || ''}</textarea>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('save-services').addEventListener('click', async () => {
+  const btn = document.getElementById('save-services');
+  btn.disabled = true; btn.textContent = 'Сохранение...';
+  const rows = [];
+  document.querySelectorAll('#services-cards .svc-title, #services-cards .svc-desc').forEach(el => {
+    rows.push({ key: el.dataset.key, value: el.value.trim(), section: 'services', label: el.dataset.key });
+  });
+  const { error } = await sb.from('site_texts').upsert(rows, { onConflict: 'key' });
+  btn.disabled = false; btn.textContent = 'Сохранить услуги';
+  error ? toast('Ошибка: ' + error.message, 'error') : toast('Услуги сохранены ✓');
+});
+
+// ── STATS ──
+async function loadStats() {
+  const keys = ['stat_1_value','stat_1_label','stat_2_value','stat_2_label','stat_3_value','stat_3_label'];
+  const { data } = await sb.from('site_texts').select('*').in('key', keys);
+  const map = Object.fromEntries((data ?? []).map(r => [r.key, r.value]));
+  document.getElementById('st1-val').value   = map.stat_1_value || '10 000+';
+  document.getElementById('st1-label').value = map.stat_1_label || 'установок и обслуживаний устройств самообслуживания';
+  document.getElementById('st2-val').value   = map.stat_2_value || 'с 2012';
+  document.getElementById('st2-label').value = map.stat_2_label || 'работаем на рынке Казахстана';
+  document.getElementById('st3-val').value   = map.stat_3_value || '24/7';
+  document.getElementById('st3-label').value = map.stat_3_label || 'оперативная логистика и выезды по задачам клиента';
+}
+
+document.getElementById('save-stats').addEventListener('click', async () => {
+  const btn = document.getElementById('save-stats');
+  btn.disabled = true; btn.textContent = 'Сохранение...';
+  const rows = [
+    { key: 'stat_1_value', value: document.getElementById('st1-val').value.trim(),   section: 'stats', label: 'Цифра 1' },
+    { key: 'stat_1_label', value: document.getElementById('st1-label').value.trim(), section: 'stats', label: 'Подпись 1' },
+    { key: 'stat_2_value', value: document.getElementById('st2-val').value.trim(),   section: 'stats', label: 'Цифра 2' },
+    { key: 'stat_2_label', value: document.getElementById('st2-label').value.trim(), section: 'stats', label: 'Подпись 2' },
+    { key: 'stat_3_value', value: document.getElementById('st3-val').value.trim(),   section: 'stats', label: 'Цифра 3' },
+    { key: 'stat_3_label', value: document.getElementById('st3-label').value.trim(), section: 'stats', label: 'Подпись 3' },
+  ];
+  const { error } = await sb.from('site_texts').upsert(rows, { onConflict: 'key' });
+  btn.disabled = false; btn.textContent = 'Сохранить статистику';
+  error ? toast('Ошибка: ' + error.message, 'error') : toast('Статистика сохранена ✓');
+});
+
+// ── HELPER: load site_texts into fields ──
+async function loadTextFields(pairs) {
+  const { data } = await sb.from('site_texts').select('*');
+  if (!data) return;
+  const map = Object.fromEntries(data.map(r => [r.key, r.value]));
+  pairs.forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = map[key] || '';
+  });
+}
+
+async function saveTextFields(pairs, btnId) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = true; btn.textContent = 'Сохранение...';
+  const rows = pairs.map(([key, id, label, section]) => ({
+    key, value: document.getElementById(id).value, label: label || key, section: section || '',
+  }));
+  const { error } = await sb.from('site_texts').upsert(rows, { onConflict: 'key' });
+  btn.disabled = false; btn.textContent = 'Сохранить';
+  error ? toast('Ошибка: ' + error.message, 'error') : toast('Сохранено ✓');
+}
+
+// ── FOR WHOM ──
+const FOR_WHOM_FIELDS = [
+  ['for_whom_title',    'fw-title',   'Заголовок раздела', 'for_whom'],
+  ['for_whom_card1_title', 'fw-c1-title', 'Карточка 1 заголовок', 'for_whom'],
+  ['for_whom_card1_desc',  'fw-c1-desc',  'Карточка 1 описание',  'for_whom'],
+  ['for_whom_card2_title', 'fw-c2-title', 'Карточка 2 заголовок', 'for_whom'],
+  ['for_whom_card2_desc',  'fw-c2-desc',  'Карточка 2 описание',  'for_whom'],
+  ['for_whom_card3_title', 'fw-c3-title', 'Карточка 3 заголовок', 'for_whom'],
+  ['for_whom_card3_desc',  'fw-c3-desc',  'Карточка 3 описание',  'for_whom'],
+];
+async function loadForWhom() { await loadTextFields(FOR_WHOM_FIELDS); }
+document.getElementById('save-for-whom').addEventListener('click', () => saveTextFields(FOR_WHOM_FIELDS, 'save-for-whom'));
+
+// ── WHY US ──
+const WHY_FIELDS = [
+  ['why_title',    'why-title',   'Заголовок раздела', 'why'],
+  ['why_card1_title', 'why-c1-title', 'Карточка 1 заголовок', 'why'],
+  ['why_card1_desc',  'why-c1-desc',  'Карточка 1 описание',  'why'],
+  ['why_card2_title', 'why-c2-title', 'Карточка 2 заголовок', 'why'],
+  ['why_card2_desc',  'why-c2-desc',  'Карточка 2 описание',  'why'],
+  ['why_card3_title', 'why-c3-title', 'Карточка 3 заголовок', 'why'],
+  ['why_card3_desc',  'why-c3-desc',  'Карточка 3 описание',  'why'],
+  ['why_card4_title', 'why-c4-title', 'Карточка 4 заголовок', 'why'],
+  ['why_card4_desc',  'why-c4-desc',  'Карточка 4 описание',  'why'],
+];
+async function loadWhy() { await loadTextFields(WHY_FIELDS); }
+document.getElementById('save-why').addEventListener('click', () => saveTextFields(WHY_FIELDS, 'save-why'));
+
+// ── CLIENTS ──
+const CLIENTS_FIELDS = [
+  ['clients_title', 'cl-title', 'Заголовок раздела', 'clients'],
+];
+async function loadClients() { await loadTextFields(CLIENTS_FIELDS); }
+document.getElementById('save-clients').addEventListener('click', () => saveTextFields(CLIENTS_FIELDS, 'save-clients'));
+
+// ── PROCESS ──
+const PROCESS_FIELDS = [
+  ['process_title',       'pr-title',   'Заголовок раздела', 'process'],
+  ['process_step1_title', 'pr-s1-title', 'Шаг 1 название', 'process'],
+  ['process_step1_desc',  'pr-s1-desc',  'Шаг 1 описание',  'process'],
+  ['process_step2_title', 'pr-s2-title', 'Шаг 2 название', 'process'],
+  ['process_step2_desc',  'pr-s2-desc',  'Шаг 2 описание',  'process'],
+  ['process_step3_title', 'pr-s3-title', 'Шаг 3 название', 'process'],
+  ['process_step3_desc',  'pr-s3-desc',  'Шаг 3 описание',  'process'],
+  ['process_step4_title', 'pr-s4-title', 'Шаг 4 название', 'process'],
+  ['process_step4_desc',  'pr-s4-desc',  'Шаг 4 описание',  'process'],
+];
+async function loadProcess() { await loadTextFields(PROCESS_FIELDS); }
+document.getElementById('save-process').addEventListener('click', () => saveTextFields(PROCESS_FIELDS, 'save-process'));
+
+// ── INIT ──
+checkSession();
+</script>
+</body>
+</html>

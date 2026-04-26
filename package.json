@@ -1,0 +1,19 @@
+{
+  "name": "a-service-pwa",
+  "version": "1.0.0",
+  "description": "A-SERVICE — корпоративный сайт PWA для сервиса банкоматов",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.104.1"
+  }
+}

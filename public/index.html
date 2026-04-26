@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#C8A84B">
+  <meta name="description" content="A-SERVICE — монтаж, демонтаж, логистика, покраска и сервисное сопровождение банкоматов и платёжных терминалов по всему Казахстану. Работаем с 2012 года.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="A-SERVICE">
+  <meta property="og:title" content="A-SERVICE — Сервис банкоматов по Казахстану">
+  <meta property="og:description" content="Монтаж, демонтаж, логистика, покраска. 10 000+ установок. Работаем с 2012 года.">
+  <meta property="og:type" content="website">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" href="/assets/dark-icon.png">
+  <link rel="apple-touch-icon" href="/assets/white-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>A-SERVICE — Монтаж и сервис банкоматов по Казахстану</title>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav id="nav" role="navigation" aria-label="Основная навигация">
+  <div class="container nav-inner">
+    <a href="#hero" class="nav-logo" aria-label="A-SERVICE — главная">
+      <img src="https://beamish-shortbread-aecc9b.netlify.app/assets/logo_white.png"
+           alt="A-SERVICE логотип" width="140" height="36"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <span class="nav-logo-text">A-SERVICE</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#services">Услуги</a></li>
+      <li><a href="#portfolio">Кейсы</a></li>
+      <li><a href="#clients">Клиенты</a></li>
+      <li><a href="#process">Процесс</a></li>
+      <li><a href="#contact">Контакты</a></li>
+    </ul>
+
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <button id="nav-cabinet-btn" class="nav-cabinet-btn" aria-label="Личный кабинет">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main>
+
+  <!-- ===== HERO ===== -->
+  <section id="hero" class="main-content">
+    <div class="hero-bg">
+      <img src="https://beamish-shortbread-aecc9b.netlify.app/assets/hero.jpg"
+           alt="Спецтранспорт A-SERVICE"
+           fetchpriority="high">
+    </div>
+
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge badge-gold">
+            <span>⬡</span> Казахстан · с 2012 года
+          </span>
+        </div>
+
+        <h1 class="hero-headline" data-text="hero_headline">
+          Надёжный подрядчик
+          <em>для сети банкоматов</em>
+        </h1>
+
+        <p class="hero-subheadline" data-text="hero_subheadline">
+          Монтаж, демонтаж, логистика, покраска и сервисное сопровождение банкоматов и платёжных терминалов — по всей Республике Казахстан.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary btn-lg open-price-modal">Получить расчёт</a>
+          <a href="#portfolio" class="btn btn-hero-ghost btn-lg">Смотреть кейсы</a>
+        </div>
+
+        <div class="hero-stats-cards">
+          <div class="hero-stat-card">
+            <strong class="hero-stat-num" data-stat="stat_1_value"><span data-count="10000" data-suffix="+">10 000+</span></strong>
+            <span class="hero-stat-desc" data-stat="stat_1_label">установок и обслуживаний устройств самообслуживания</span>
+          </div>
+          <div class="hero-stat-card">
+            <strong class="hero-stat-num" data-stat="stat_2_value">с 2012</strong>
+            <span class="hero-stat-desc" data-stat="stat_2_label">работаем на рынке Казахстана</span>
+          </div>
+          <div class="hero-stat-card">
+            <strong class="hero-stat-num" data-stat="stat_3_value">24/7</strong>
+            <span class="hero-stat-desc" data-stat="stat_3_label">оперативная логистика и выезды по задачам клиента</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BRAND STRIP ===== -->
+  <div id="brands" class="main-content">
+    <div class="container">
+      <p class="brands-label">Работаем с оборудованием</p>
+    </div>
+    <div class="brands-track-wrapper">
+      <div class="brands-track" aria-hidden="true">
+        <!-- Duplicated for seamless loop -->
+        <span class="brand-item">Wincor Nixdorf</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">Diebold</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">NCR</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">Nautilus</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">ITT 552</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">DORS</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">Wincor Nixdorf</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">Diebold</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">NCR</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">Nautilus</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">ITT 552</span>
+        <span class="brand-dot"></span>
+        <span class="brand-item">DORS</span>
+        <span class="brand-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SERVICES ===== -->
+  <section id="services" class="section main-content">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">Что мы делаем</p>
+        <h2 class="section-title">Комплексный сервис<br>для сети банкоматов</h2>
+        <p class="section-subtitle">
+          Полный цикл работ — от выезда на объект и такелажа до брендирования, перевозки и аккуратной сдачи в эксплуатацию.
+        </p>
+      </div>
+
+      <div class="services-grid">
+
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="2" y="6" width="20" height="14" rx="2"/>
+              <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+              <path d="M12 11v4M10 13h4"/>
+            </svg>
+          </div>
+          <h3 class="service-title" data-service="s1_title">Монтаж и демонтаж</h3>
+          <p class="service-desc" data-service="s1_desc">Межстенные, уличные и офисные банкоматы. Учёт технических требований модели и специфики объекта.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <h3 class="service-title" data-service="s2_title">Логистика и такелаж</h3>
+          <p class="service-desc" data-service="s2_desc">Собственный спецтранспорт: гидроборты грузоподъёмностью до 1000 кг, манипуляторы, упаковка и контроль сохранности.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h3 class="service-title" data-service="s3_title">Покраска и ребрендинг</h3>
+          <p class="service-desc" data-service="s3_desc">Покраска банкоматов, терминалов и зон обслуживания по брендбуку банка. Точная цветопередача и аккуратная подача.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <h3 class="service-title" data-service="s4_title">Пусконаладка и СКС</h3>
+          <p class="service-desc" data-service="s4_desc">Прокладка силового кабеля, пусконаладочные работы и подготовка зоны обслуживания к запуску.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <h3 class="service-title" data-service="s5_title">Козырьки и подиумы</h3>
+          <p class="service-desc" data-service="s5_desc">Изготовление и монтаж навесных рекламных козырьков, металлических подиумов и дополнительных конструкций.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <h3 class="service-title" data-service="s6_title">Чистка и восстановление</h3>
+          <p class="service-desc" data-service="s6_desc">Сервисное восстановление внешнего вида банкоматов и терминалов до аккуратного фирменного стандарта банка.</p>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;margin-top:2.5rem;" class="reveal">
+        <button class="btn btn-primary btn-lg open-price-modal">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+          </svg>
+          Узнать стоимость
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ДЛЯ КОГО ===== -->
+  <section id="for-whom" class="section main-content">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-eyebrow">Для кого</p>
+        <h2 class="section-title" data-text="for_whom_title">Подходит банкам и организациям<br>с действующей сетью устройств самообслуживания</h2>
+      </div>
+
+      <div class="for-whom-grid">
+        <div class="for-whom-card reveal">
+          <h3 class="for-whom-title" data-text="for_whom_card1_title">Банки</h3>
+          <p class="for-whom-desc" data-text="for_whom_card1_desc">Для расширения сети, ребрендинга, переезда, замены и обновления парка банкоматов.</p>
+        </div>
+        <div class="for-whom-card reveal reveal-delay-1">
+          <h3 class="for-whom-title" data-text="for_whom_card2_title">Сервисные компании</h3>
+          <p class="for-whom-desc" data-text="for_whom_card2_desc">Когда нужен проверенный подрядчик на монтаж, логистику, выезды по регионам и поддержку проектов.</p>
+        </div>
+        <div class="for-whom-card reveal reveal-delay-2">
+          <h3 class="for-whom-title" data-text="for_whom_card3_title">Корпоративные сети</h3>
+          <p class="for-whom-desc" data-text="for_whom_card3_desc">Для платёжных терминалов, информационных киосков и устройства самообслуживания в филиальной сети.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ПОЧЕМУ A-SERVICE ===== -->
+  <section id="why-us" class="section main-content">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-eyebrow">Почему выбирают нас</p>
+        <h2 class="section-title" data-text="why_title">Спокойная организация<br>сложных работ</h2>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card reveal">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="24" height="24">
+              <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <h3 class="why-title" data-text="why_card1_title">Собственный спецтранспорт</h3>
+          <p class="why-desc" data-text="why_card1_desc">Гидроборты грузоподъёмностью от 80 до 1 000 кг, манипуляторы и такелажное оснащение.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-1">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="24" height="24">
+              <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+            </svg>
+          </div>
+          <h3 class="why-title" data-text="why_card2_title">Вся Республика Казахстан</h3>
+          <p class="why-desc" data-text="why_card2_desc">Работаем в крупных городах и регионах, выстраиваем логистику под график заказчика.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-2">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="24" height="24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3 class="why-title" data-text="why_card3_title">Ответственность за сохранность</h3>
+          <p class="why-desc" data-text="why_card3_desc">Контроль груза на всём маршруте и бережная работа с банкоматами и терминалами.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-3">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="24" height="24">
+              <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+          </div>
+          <h3 class="why-title" data-text="why_card4_title">Формат под задачу</h3>
+          <p class="why-desc" data-text="why_card4_desc">Разовые работы, серийные выезды, долгосрочное сопровождение и отдельные региональные проекты.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PORTFOLIO CAROUSEL ===== -->
+  <section id="portfolio" class="section main-content">
+    <div class="container">
+      <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <p class="section-eyebrow">Портфолио</p>
+          <h2 class="section-title">Кейсы, которые<br>говорят за нас</h2>
+        </div>
+        <p class="text-small text-muted" style="max-width:280px;text-align:right;">
+          Реальные проекты для крупнейших банков Казахстана
+        </p>
+      </div>
+    </div>
+
+    <div class="carousel-container">
+      <div class="carousel-track-wrapper">
+        <div class="carousel-track" id="carousel-track">
+
+          <div class="portfolio-card">
+            <div class="portfolio-img">
+              <img src="/assets/room-for-rebrend.webp"
+                   alt="Покраска банкоматов AO Jusan" loading="lazy">
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-year">2019</div>
+              <div class="portfolio-title">Покраска банкоматов АО Jusan</div>
+              <div class="portfolio-subtitle">Каждый банкомат проходит обработку в оборудованных покрасочных помещениях — чистота, точность и идеальное попадание в фирменный цвет по стандартам банка.</div>
+            </div>
+          </div>
+
+          <div class="portfolio-card">
+            <div class="portfolio-img">
+              <img src="/assets/cars.webp"
+                   alt="1200+ установок Bereke Bank" loading="lazy">
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-year">2023</div>
+              <div class="portfolio-title">1 200+ установок за 2 месяца</div>
+              <div class="portfolio-subtitle">Специализированные машины готовы к выезду в любой момент — собственный автопарк позволяет быстро развернуть монтаж по всему Казахстану.</div>
+            </div>
+          </div>
+
+          <div class="portfolio-card">
+            <div class="portfolio-img">
+              <img src="/assets/na-krane.webp"
+                   alt="Ребрендинг Jusan в AlatauCityBank" loading="lazy">
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-year">2025</div>
+              <div class="portfolio-title">Ребрендинг Jusan → AlatauCityBank</div>
+              <div class="portfolio-subtitle">Используем краны и подъёмное оборудование для безопасной установки и перемещения банкоматов — быстро, точно и без повреждений.</div>
+            </div>
+          </div>
+
+          <div class="portfolio-card">
+            <div class="portfolio-img">
+              <img src="/assets/into-car.webp"
+                   alt="Логистика терминалов" loading="lazy">
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-year">2024</div>
+              <div class="portfolio-title">Логистика и перевозка терминалов</div>
+              <div class="portfolio-subtitle">Каждый терминал надёжно закреплён внутри машины — никакой тряски, полный контроль на всём пути доставки.</div>
+            </div>
+          </div>
+
+          <div class="portfolio-card">
+            <div class="portfolio-img">
+              <img src="/assets/safety.webp"
+                   alt="Упаковка и доставка оборудования" loading="lazy">
+            </div>
+            <div class="portfolio-info">
+              <div class="portfolio-year">2024</div>
+              <div class="portfolio-title">Упаковка и защита оборудования</div>
+              <div class="portfolio-subtitle">Обрешётка, фиксация и защитные материалы — мы относимся к каждому банкомату как к хрупкому оборудованию и исключаем любые повреждения.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="carousel-controls">
+        <div class="carousel-dots" id="carousel-dots"></div>
+        <div class="carousel-arrows">
+          <button class="carousel-arrow" id="carousel-prev" aria-label="Предыдущий слайд">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+          </button>
+          <button class="carousel-arrow" id="carousel-next" aria-label="Следующий слайд">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ДОПОЛНИТЕЛЬНЫЕ УСЛУГИ ===== -->
+  <section id="extra-services" class="section main-content">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-eyebrow">Дополнительные услуги</p>
+        <h2 class="section-title">Перевозка мебели и услуги грузчиков<br>по всему Казахстану</h2>
+      </div>
+
+      <div class="extra-services-grid">
+        <div class="extra-services-card reveal">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="24" height="24">
+              <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <h3 class="why-title extra-services-title">Перевозка мебели</h3>
+          <div class="extra-services-divider"></div>
+          <p class="why-desc">Организуем аккуратную перевозку мебели по всему Казахстану — от одной точки до комплексного переезда.</p>
+        </div>
+        <div class="extra-services-card reveal reveal-delay-1">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="24" height="24">
+              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+            </svg>
+          </div>
+          <h3 class="why-title extra-services-title">Погрузка и разгрузка</h3>
+          <div class="extra-services-divider"></div>
+          <p class="why-desc">Бережно выполняем погрузку, разгрузку, занос, вынос и расстановку мебели на объекте.</p>
+        </div>
+        <div class="extra-services-card reveal reveal-delay-2">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="24" height="24">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <h3 class="why-title extra-services-title">Профессиональные грузчики</h3>
+          <div class="extra-services-divider"></div>
+          <p class="why-desc">Опытная команда быстро подключается к задаче и берёт тяжёлую работу на себя.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CLIENTS ===== -->
+  <section id="clients" class="section section--tight main-content">
+    <div class="container">
+      <div class="section-header centered reveal">
+        <p class="section-eyebrow">Клиенты и партнёры</p>
+        <h2 class="section-title" data-text="clients_title">Банки, которые нам доверяют</h2>
+      </div>
+
+      <div class="clients-grid">
+  <div class="client-card reveal">
+    <img src="/assets/alataubank.webp" alt="AlatauCityBank" class="client-logo"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="client-name client-name-fallback" style="display:none">AlatauCityBank</span>
+  </div>
+  <div class="client-card reveal reveal-delay-2">
+    <img src="/assets/eurasian.png" alt="Eurasian Bank" class="client-logo"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="client-name client-name-fallback" style="display:none">Eurasian Bank</span>
+  </div>
+  <div class="client-card reveal reveal-delay-3">
+    <img src="/assets/bereke.webp" alt="Bereke Bank" class="client-logo"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="client-name client-name-fallback" style="display:none">Bereke Bank</span>
+  </div>
+  <div class="client-card reveal">
+    <img src="/assets/bck.svg" alt="БЦК" class="client-logo client-logo--bck"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="client-name client-name-fallback" style="display:none">БЦК</span>
+  </div>
+  <div class="client-card reveal reveal-delay-1">
+    <span class="client-name">DORS Kazakhstan</span>
+  </div>
+  <div class="client-card reveal reveal-delay-2">
+    <span class="client-name client-name-bsu">BSU<span class="client-name-bsu-sub">Kazakhstan</span></span>
+  </div>
+  <div class="client-card reveal reveal-delay-3" style="border-style:dashed;">
+    <span class="client-name" style="color:var(--muted);font-size:0.8125rem;">+другие партнёры</span>
+  </div>
+</div>
+    </div>
+  </section>
+
+  <!-- ===== PROCESS ===== -->
+  <section id="process" class="section main-content">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-eyebrow">Как мы работаем</p>
+        <h2 class="section-title" data-text="process_title">Чёткий процесс<br>от заявки до сдачи</h2>
+      </div>
+
+      <div class="process-grid">
+        <div class="process-steps">
+
+          <div class="process-step reveal">
+            <div class="process-step-left">
+              <div class="process-step-num">01</div>
+              <div class="process-step-line"></div>
+            </div>
+            <div class="process-step-content">
+              <h3 class="process-step-title" data-text="process_step1_title">Заявка и расчёт</h3>
+              <p class="process-step-desc" data-text="process_step1_desc">Принимаем задачу, уточняем адрес, тип объекта, количество устройств и сроки. Готовим точный расчёт.</p>
+            </div>
+          </div>
+
+          <div class="process-step reveal reveal-delay-1">
+            <div class="process-step-left">
+              <div class="process-step-num">02</div>
+              <div class="process-step-line"></div>
+            </div>
+            <div class="process-step-content">
+              <h3 class="process-step-title" data-text="process_step2_title">Выезд на объект</h3>
+              <p class="process-step-desc" data-text="process_step2_desc">Бригада выезжает со спецтранспортом и необходимым оборудованием. Оцениваем условия на месте.</p>
+            </div>
+          </div>
+
+          <div class="process-step reveal reveal-delay-2">
+            <div class="process-step-left">
+              <div class="process-step-num">03</div>
+              <div class="process-step-line"></div>
+            </div>
+            <div class="process-step-content">
+              <h3 class="process-step-title" data-text="process_step3_title">Выполнение работ</h3>
+              <p class="process-step-desc" data-text="process_step3_desc">Монтаж, демонтаж, покраска или логистика — в соответствии с техзаданием и требованиями банка.</p>
+            </div>
+          </div>
+
+          <div class="process-step reveal reveal-delay-3">
+            <div class="process-step-left">
+              <div class="process-step-num">04</div>
+              <div class="process-step-line"></div>
+            </div>
+            <div class="process-step-content">
+              <h3 class="process-step-title" data-text="process_step4_title">Сдача и документы</h3>
+              <p class="process-step-desc" data-text="process_step4_desc">Акт выполненных работ, уборка после работ и фотофиксация результата. Оборудование сдаётся в полном порядке.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT FORM ===== -->
+  <section id="contact" class="section main-content">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-eyebrow">Контакты</p>
+        <h2 class="section-title">Готовы обсудить<br>вашу задачу</h2>
+      </div>
+
+      <div class="contact-grid">
+
+        <!-- Contact Info -->
+        <div class="contact-info reveal">
+          <div class="contact-detail">
+
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="contact-item-label">Телефон</div>
+                <div class="contact-item-value">
+                  <a href="tel:+77777294964" data-contact="phone">+7 777 729 49 64</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div>
+                <div class="contact-item-label">Email</div>
+                <div class="contact-item-value">
+                  <a href="mailto:haba-87@mail.ru" data-contact="email">haba-87@mail.ru</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div>
+                <div class="contact-item-label">Контактное лицо</div>
+                <div class="contact-item-value" data-contact="contact_person">Асылжанов Азиз, директор</div>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <div class="contact-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="2" y1="12" x2="22" y2="12"/>
+                  <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="contact-item-label">Покрытие</div>
+                <div class="contact-item-value">Вся Республика Казахстан</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="contact-form-card reveal reveal-delay-1">
+          <form id="contact-form" class="form" name="contact" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+            <input type="hidden" name="form-name" value="contact">
+            <input type="hidden" name="bot-field" style="display:none">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="f-company">Компания *</label>
+                <input type="text" id="f-company" class="form-input" placeholder="АО Ваш Банк" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="f-city">Город / регион *</label>
+                <select id="f-city" class="form-select" required>
+                    <option value="">Выберите город</option>
+                    <option>Алматы</option><option>Астана</option><option>Шымкент</option>
+                    <option>Актобе</option><option>Тараз</option><option>Павлодар</option>
+                    <option>Усть-Каменогорск</option><option>Атырау</option><option>Семей</option>
+                    <option>Другой</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="f-phone">Телефон *</label>
+              <input type="tel" id="f-phone" class="form-input" placeholder="+7 (___) ___-__-__" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="f-service">Тип задачи</label>
+              <select id="f-service" class="form-select">
+                  <option value="">Выберите услугу</option>
+                  <option value="atm-install">Монтаж банкомата</option>
+                  <option value="atm-uninstall">Демонтаж банкомата</option>
+                  <option value="logistics">Логистика и перевозка</option>
+                  <option value="painting">Покраска и ребрендинг</option>
+                  <option value="service">Комплексное сопровождение</option>
+                  <option value="other">Другое</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="f-comment">Комментарий</label>
+              <textarea id="f-comment" class="form-textarea" rows="4"
+                placeholder="Опишите задачу: тип банкомата, количество, адреса, сроки..."></textarea>
+            </div>
+
+            <p class="form-note">
+              После отправки — перезвоним в течение рабочего дня. Поля, отмеченные * обязательны.
+            </p>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="align-self:flex-start;">
+              Отправить заявку
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </form>
+
+          <div id="form-success" class="form-success">
+            <div class="form-success-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h3 style="font-size:1.375rem;">Заявка отправлена</h3>
+            <p style="font-size:0.9375rem;color:var(--text-secondary);max-width:320px;">
+              Мы получили ваш запрос и свяжемся в течение рабочего дня для уточнения деталей.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== PERSONAL CABINET ===== -->
+<div id="cabinet">
+  <div class="container">
+
+    <!-- Role tabs -->
+    <div class="cabinet-role-tabs" style="display:none;">
+      <button class="cabinet-role-tab active" data-role="client">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        Клиент
+      </button>
+      <button class="cabinet-role-tab" data-role="executor" style="display:none;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        Исполнитель
+      </button>
+    </div>
+
+    <!-- CLIENT: Auth Screen -->
+    <div id="client-auth-screen" class="auth-screen">
+      <div style="margin-bottom:2rem;">
+        <p class="section-eyebrow" style="justify-content:flex-start;">Личный кабинет</p>
+        <h2 style="font-size:1.75rem;font-weight:800;">Вход в систему</h2>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Вход</button>
+        <button class="auth-tab" data-tab="register">Регистрация</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="form-login" class="auth-form visible" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="l-email">Email *</label>
+          <input type="email" id="l-email" class="form-input" placeholder="your@bank.kz" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="l-password">Пароль *</label>
+          <input type="password" id="l-password" class="form-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Войти</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="form-register" class="auth-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="r-name">Имя *</label>
+            <input type="text" id="r-name" class="form-input" placeholder="Иван Иванов" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="r-company">Компания *</label>
+            <input type="text" id="r-company" class="form-input" placeholder="АО Ваш Банк" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="r-phone">Телефон *</label>
+          <input type="tel" id="r-phone" class="form-input" placeholder="+7 (___) ___-__-__" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="r-email">Email *</label>
+          <input type="email" id="r-email" class="form-input" placeholder="your@bank.kz" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="r-password">Пароль *</label>
+          <input type="password" id="r-password" class="form-input" placeholder="мин. 6 символов" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Зарегистрироваться</button>
+      </form>
+    </div>
+
+    <!-- CLIENT: Dashboard -->
+    <div id="client-dashboard" class="dashboard">
+      <div class="dashboard-header">
+        <div>
+          <p class="section-eyebrow" style="justify-content:flex-start;">Личный кабинет</p>
+          <h2 class="dashboard-title">Добро пожаловать, <span id="dash-user-name">—</span></h2>
+        </div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button id="new-order-btn" class="btn btn-primary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Новая заявка
+          </button>
+          <button id="logout-btn" class="btn btn-outline btn-sm">Выйти</button>
+        </div>
+      </div>
+
+      <div class="dashboard-stats">
+        <div class="dash-stat">
+          <div class="dash-stat-value" id="stat-total">—</div>
+          <div class="dash-stat-label">Всего заявок</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-value" id="stat-new" style="color:var(--brand-3)">—</div>
+          <div class="dash-stat-label">Отправлено</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-value" id="stat-progress" style="color:#60a5fa">—</div>
+          <div class="dash-stat-label">В обработке</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-value" id="stat-done" style="color:#4ade80">—</div>
+          <div class="dash-stat-label">Выполнено</div>
+        </div>
+      </div>
+
+      <!-- New Order Form (collapsible) -->
+      <div id="order-form-wrap" class="order-form-wrap" style="display:none;">
+        <div class="order-form-header">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+            </svg>
+            Новая заявка
+          </h3>
+          <button id="close-order-form" class="btn-icon-close" aria-label="Закрыть">✕</button>
+        </div>
+        <form id="order-form" class="form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="o-city">Город *</label>
+              <select id="o-city" class="form-select" required>
+                <option value="">Выберите город</option>
+                <option>Алматы</option><option>Астана</option><option>Шымкент</option>
+                <option>Актобе</option><option>Тараз</option><option>Павлодар</option>
+                <option>Усть-Каменогорск</option><option>Атырау</option><option>Семей</option>
+                <option>Другой</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="o-service">Тип услуги *</label>
+              <select id="o-service" class="form-select" required>
+                <option value="">Выберите услугу</option>
+                <option value="atm-uninstall">Демонтаж банкоматов</option>
+                <option value="terminal-uninstall">Демонтаж терминалов</option>
+                <option value="service">Обслуживание</option>
+                <option value="logistics">Логистика</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="o-count">Количество устройств *</label>
+              <input type="number" id="o-count" class="form-input" placeholder="1" min="1" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="o-date">Дата и время</label>
+              <input type="datetime-local" id="o-date" class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="o-address">Адрес *</label>
+            <input type="text" id="o-address" class="form-input" placeholder="ул. Абая 10, офис 205" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="o-comment">Комментарий</label>
+            <textarea id="o-comment" class="form-textarea" rows="3" placeholder="Дополнительные детали..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+            </svg>
+            Отправить в WhatsApp
+          </button>
+        </form>
+      </div>
+
+      <!-- Orders Table -->
+      <div class="orders-table-wrap">
+        <div class="orders-table-header">
+          <h3 style="font-size:1rem;font-weight:600;">Мои заявки</h3>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Город</th>
+                <th>Услуга</th>
+                <th>Кол-во</th>
+                <th>Дата</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">Загрузка...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="main-content">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="https://beamish-shortbread-aecc9b.netlify.app/assets/logo_white.png"
+             alt="A-SERVICE" height="32"
+             onerror="this.style.display='none'">
+        <p style="margin-top:1rem;">
+          Профессиональный монтаж, логистика и сервис банкоматов по всей Республике Казахстан с 2012 года.
+        </p>
+        <p style="margin-top:0.75rem;font-size:0.8125rem;color:var(--muted);">
+          <a href="tel:+77777294964" style="color:var(--brand-3);">+7 777 729 49 64</a>
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Услуги</h4>
+        <ul class="footer-links">
+          <li><a href="#services">Монтаж и демонтаж</a></li>
+          <li><a href="#services">Логистика и такелаж</a></li>
+          <li><a href="#services">Покраска и ребрендинг</a></li>
+          <li><a href="#services">Пусконаладка</a></li>
+          <li><a href="#services">Козырьки и подиумы</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Компания</h4>
+        <ul class="footer-links">
+          <li><a href="#portfolio">Кейсы</a></li>
+          <li><a href="#clients">Клиенты</a></li>
+          <li><a href="#contact">Контакты</a></li>
+          <li><a class="open-price-modal" style="cursor:pointer;">Узнать цену</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 A-SERVICE. Все права защищены.</p>
+      <p class="footer-copy">Казахстан · Алматы</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== MOBILE BOTTOM BAR ===== -->
+<nav id="bottom-bar" role="navigation" aria-label="Мобильная навигация">
+  <div class="bottom-bar-inner">
+
+    <button class="bottom-bar-btn active" data-target="hero">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Главная
+    </button>
+
+    <button class="bottom-bar-btn" data-target="services">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      Услуги
+    </button>
+
+    <button class="bottom-bar-btn" data-target="portfolio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <rect x="18" y="3" width="4" height="14" rx="1"/>
+        <rect x="10" y="8" width="4" height="9" rx="1"/>
+        <rect x="2" y="13" width="4" height="4" rx="1"/>
+      </svg>
+      Кейсы
+    </button>
+
+    <button class="bottom-bar-btn" data-target="contact">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+      Контакты
+    </button>
+
+  </div>
+</nav>
+
+<!-- ===== PRICE MODAL ===== -->
+<div id="price-modal" class="modal-overlay" aria-modal="true" role="dialog" style="display:none;">
+  <div class="modal-box">
+    <button class="modal-close" id="price-modal-close" aria-label="Закрыть">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <p class="section-eyebrow" style="justify-content:flex-start;margin-bottom:0.5rem;">Стоимость</p>
+    <h3 style="font-size:1.375rem;font-weight:800;margin-bottom:1.5rem;">Узнать стоимость работ</h3>
+    <form id="price-form" class="form" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="p-name">Имя *</label>
+          <input type="text" id="p-name" class="form-input" placeholder="Иван" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-company">Компания *</label>
+          <input type="text" id="p-company" class="form-input" placeholder="АО Банк" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="p-phone">Телефон *</label>
+        <input type="tel" id="p-phone" class="form-input" placeholder="+7 (___) ___-__-__" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="p-service">Услуга</label>
+          <select id="p-service" class="form-select">
+            <option value="">Выберите услугу</option>
+            <option value="atm-install">Монтаж банкомата</option>
+            <option value="atm-uninstall">Демонтаж банкомата</option>
+            <option value="logistics">Логистика</option>
+            <option value="painting">Покраска / ребрендинг</option>
+            <option value="service">Обслуживание</option>
+            <option value="other">Другое</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="p-city">Город</label>
+          <select id="p-city" class="form-select">
+            <option value="">Выберите город</option>
+            <option>Алматы</option><option>Астана</option><option>Шымкент</option>
+            <option>Актобе</option><option>Тараз</option><option>Павлодар</option>
+            <option>Усть-Каменогорск</option><option>Атырау</option><option>Семей</option>
+            <option>Другой</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="p-comment">Комментарий</label>
+        <textarea id="p-comment" class="form-textarea" rows="3" placeholder="Опишите задачу кратко..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+        </svg>
+        Отправить в WhatsApp
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script type="module" src="/src/main.ts"></script>
+
+</body>
+</html>

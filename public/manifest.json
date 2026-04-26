@@ -1,0 +1,27 @@
+{
+  "name": "A-SERVICE — Сервис банкоматов",
+  "short_name": "A-SERVICE",
+  "description": "Монтаж, демонтаж, логистика и сервис банкоматов по Казахстану",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0d14",
+  "theme_color": "#C8A84B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/dark-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/white-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["business", "utilities"],
+  "lang": "ru",
+  "scope": "/"
+}

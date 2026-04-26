@@ -1,0 +1,14 @@
+.env
+.env.example
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+venv
+.venv
+# Приватный ключ монтируется через volume, не копируется в образ
+private_key.pem
+# Подписки тоже монтируются
+subscriptions.json
