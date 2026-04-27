@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
 
     smtp_host: str = "smtp.gmail.com"
-    smtp_port: int = 587
-    smtp_user: str
-    smtp_password: str
+    smtp_port: int = 465
+    smtp_user: str = ""
+    smtp_password: str = ""
     recipient_email: str
 
     telegram_bot_token: str

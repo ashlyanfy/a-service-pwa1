@@ -1,6 +1,7 @@
 import html as html_lib
 import logging
 import smtplib
+import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -11,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 def _esc(value: str | None, fallback: str = "—") -> str:
-    """Экранирует HTML-символы в пользовательских данных."""
     return html_lib.escape(str(value)) if value else fallback
 
 
@@ -59,9 +59,9 @@ def send_email(order: dict) -> None:
     msg["To"] = settings.recipient_email
     msg.attach(MIMEText(body, "html", "utf-8"))
 
-    with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
-        server.ehlo()
-        server.starttls()
+    # Пробуем порт 465 (SSL) — Railway блокирует 587 (STARTTLS)
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(settings.smtp_host, 465, context=context) as server:
         server.login(settings.smtp_user, settings.smtp_password)
         server.sendmail(settings.smtp_user, settings.recipient_email, msg.as_string())
 
