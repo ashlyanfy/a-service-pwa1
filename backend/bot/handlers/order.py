@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import re
 import uuid
@@ -7,7 +8,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from app.models.order import SERVICE_LABELS
-from app.tasks.notifications import send_email_task, send_telegram_task
+from app.services.email import send_email
+from app.services.telegram import send_telegram
 from bot.keyboards.inline import cities_keyboard, services_keyboard, skip_keyboard
 from bot.states import OrderForm
 
@@ -100,19 +102,20 @@ async def _submit_order(message: Message, state: FSMContext, comment: str | None
         "source":   "telegram_bot",
     }
 
-    try:
-        send_email_task.delay(order_data)
-        send_telegram_task.delay(order_data)
-    except Exception as exc:
-        logger.error("Failed to enqueue tasks for order %s: %s", order_id, exc)
-        await state.clear()
-        await message.answer(
-            "⚠️ Произошла ошибка при отправке заявки. Попробуйте позже или свяжитесь с нами напрямую."
-        )
-        return
-
     await state.clear()
-    logger.info("Order from bot enqueued: %s", order_id)
+
+    async def _notify() -> None:
+        try:
+            await asyncio.to_thread(send_email, order_data)
+        except Exception as exc:
+            logger.error("Email failed (order=%s): %s", order_id, exc)
+        try:
+            await asyncio.to_thread(send_telegram, order_data)
+        except Exception as exc:
+            logger.error("Telegram failed (order=%s): %s", order_id, exc)
+
+    asyncio.create_task(_notify())
+    logger.info("Order from bot submitted: %s", order_id)
 
     await message.answer(
         f"✅ <b>Заявка принята!</b>\n\n"
