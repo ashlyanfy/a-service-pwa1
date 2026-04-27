@@ -3,21 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#C8A84B">
-  <meta name="description" content="A-SERVICE — монтаж, демонтаж, логистика, покраска и сервисное сопровождение банкоматов и платёжных терминалов по всему Казахстану. Работаем с 2012 года.">
+  <meta name="theme-color" content="#3e2d8f">
+
+  <!-- ===== SEO ===== -->
+  <title>A-SERVICE — Монтаж, демонтаж и сервис банкоматов по Казахстану | с 2012 года</title>
+  <meta name="description" content="A-SERVICE — профессиональный монтаж, демонтаж, логистика, покраска и ребрендинг банкоматов и платёжных терминалов по всему Казахстану. 10 000+ установок. Работаем с 2012 года. Алматы, Астана, Шымкент.">
+  <meta name="keywords" content="монтаж банкоматов Казахстан, демонтаж банкоматов, сервис банкоматов Алматы, логистика банкоматов, ребрендинг банкоматов, установка банкоматов, перевозка банкоматов, такелаж банкоматов, покраска банкоматов, обслуживание банкоматов, A-SERVICE">
+  <meta name="author" content="A-SERVICE">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://a-service-pwa1.vercel.app/">
+
+  <!-- ===== Open Graph (для соцсетей) ===== -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://a-service-pwa1.vercel.app/">
+  <meta property="og:title" content="A-SERVICE — Монтаж и сервис банкоматов по Казахстану">
+  <meta property="og:description" content="Профессиональный монтаж, демонтаж, логистика и ребрендинг банкоматов. 10 000+ установок с 2012 года. Работаем по всему Казахстану.">
+  <meta property="og:image" content="https://a-service-pwa1.vercel.app/assets/cars.webp">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="A-SERVICE">
+
+  <!-- ===== Twitter Card ===== -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="A-SERVICE — Монтаж и сервис банкоматов по Казахстану">
+  <meta name="twitter:description" content="Монтаж, демонтаж, логистика, покраска банкоматов. 10 000+ установок с 2012 года.">
+  <meta name="twitter:image" content="https://a-service-pwa1.vercel.app/assets/cars.webp">
+
+  <!-- ===== PWA ===== -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="A-SERVICE">
-  <meta property="og:title" content="A-SERVICE — Сервис банкоматов по Казахстану">
-  <meta property="og:description" content="Монтаж, демонтаж, логистика, покраска. 10 000+ установок. Работаем с 2012 года.">
-  <meta property="og:type" content="website">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/png" href="/assets/dark-icon.png">
   <link rel="apple-touch-icon" href="/assets/white-icon.png">
+
+  <!-- ===== Schema.org — LocalBusiness ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "A-SERVICE",
+    "description": "Профессиональный монтаж, демонтаж, логистика, покраска и ребрендинг банкоматов и платёжных терминалов по всему Казахстану",
+    "url": "https://a-service-pwa1.vercel.app",
+    "telephone": "+77777294964",
+    "email": "haba-87@mail.ru",
+    "foundingDate": "2012",
+    "areaServed": {
+      "@type": "Country",
+      "name": "Kazakhstan"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Алматы",
+      "addressCountry": "KZ"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "43.2220",
+      "longitude": "76.8512"
+    },
+    "openingHours": "Mo-Su 00:00-24:00",
+    "priceRange": "$$",
+    "image": "https://a-service-pwa1.vercel.app/assets/cars.webp",
+    "sameAs": [],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Услуги по обслуживанию банкоматов",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Монтаж банкоматов",
+            "description": "Профессиональный монтаж банкоматов и платёжных терминалов по всему Казахстану"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Демонтаж банкоматов",
+            "description": "Безопасный демонтаж банкоматов с соблюдением всех технических требований"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Логистика и перевозка банкоматов",
+            "description": "Перевозка банкоматов спецтранспортом с гидробортом по всему Казахстану"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Покраска и ребрендинг банкоматов",
+            "description": "Покраска банкоматов по брендбуку банка, точная цветопередача"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Пусконаладка банкоматов",
+            "description": "Пусконаладочные работы, прокладка кабеля, подготовка зоны обслуживания"
+          }
+        }
+      ]
+    }
+  }
+  </script>
+
+  <!-- ===== Schema.org — Organization ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "A-SERVICE",
+    "url": "https://a-service-pwa1.vercel.app",
+    "logo": "https://a-service-pwa1.vercel.app/assets/logo_white.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+7-777-729-49-64",
+      "contactType": "customer service",
+      "areaServed": "KZ",
+      "availableLanguage": ["Russian", "Kazakh"]
+    }
+  }
+  </script>
+
+  <!-- ===== Fonts ===== -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <title>A-SERVICE — Монтаж и сервис банкоматов по Казахстану</title>
 </head>
 <body>
 

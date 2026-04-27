@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://a-service-pwa1.vercel.app/sitemap.xml
