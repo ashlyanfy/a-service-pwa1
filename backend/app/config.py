@@ -16,11 +16,8 @@ class Settings(BaseSettings):
     rate_limit_window: int = 60
     redis_url: str = "redis://localhost:6379/0"
 
-    smtp_host: str = "smtp.gmail.com"
-    smtp_port: int = 465
-    smtp_user: str = ""
-    smtp_password: str = ""
     recipient_email: str
+    resend_api_key: str = ""
 
     telegram_bot_token: str
     telegram_chat_id: str

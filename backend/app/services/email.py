@@ -1,9 +1,7 @@
 import html as html_lib
 import logging
-import smtplib
-import ssl
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+
+import resend
 
 from app.config import settings
 from app.models.order import SERVICE_LABELS
@@ -51,18 +49,14 @@ def _build_html(order: dict) -> tuple[str, str]:
 
 
 def send_email(order: dict) -> None:
+    resend.api_key = settings.resend_api_key
     subject, body = _build_html(order)
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = settings.smtp_user
-    msg["To"] = settings.recipient_email
-    msg.attach(MIMEText(body, "html", "utf-8"))
+    resend.Emails.send({
+        "from": "A-SERVICE <onboarding@resend.dev>",
+        "to": [settings.recipient_email],
+        "subject": subject,
+        "html": body,
+    })
 
-    # Пробуем порт 465 (SSL) — Railway блокирует 587 (STARTTLS)
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(settings.smtp_host, 465, context=context) as server:
-        server.login(settings.smtp_user, settings.smtp_password)
-        server.sendmail(settings.smtp_user, settings.recipient_email, msg.as_string())
-
-    logger.info("Email sent: order=%s", order.get("order_id"))
+    logger.info("Email sent via Resend: order=%s", order.get("order_id"))
