@@ -2,12 +2,13 @@ import asyncio
 import logging
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 
 from app.dependencies import rate_limit
 from app.models.order import OrderRequest, OrderResponse
+from app.services.email import send_email
+from app.services.telegram import send_telegram
 from app.services.webpush import send_push_to_all
-from app.tasks.notifications import send_email_task, send_telegram_task
 
 logger = logging.getLogger(__name__)
 
@@ -23,16 +24,21 @@ async def create_order(order: OrderRequest) -> OrderResponse:
         "service": order.service.value,
     }
 
-    # Celery-задачи: email и Telegram (асинхронно через брокер)
-    try:
-        send_email_task.delay(order_data)
-        send_telegram_task.delay(order_data)
-    except Exception as exc:
-        logger.error("Failed to enqueue notification tasks: %s", exc)
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Сервис временно недоступен. Попробуйте позже.",
-        )
+    # Email и Telegram — запускаем в фоне через to_thread (синхронные функции)
+    # Не блокируем ответ клиенту, ошибки только логируем
+    async def _notify() -> None:
+        try:
+            await asyncio.to_thread(send_email, order_data)
+            logger.info("Email sent: order=%s", order_id)
+        except Exception as exc:
+            logger.error("Email failed (order=%s): %s", order_id, exc)
+        try:
+            await asyncio.to_thread(send_telegram, order_data)
+            logger.info("Telegram sent: order=%s", order_id)
+        except Exception as exc:
+            logger.error("Telegram failed (order=%s): %s", order_id, exc)
+
+    asyncio.create_task(_notify())
 
     # Web Push — запускаем в отдельном потоке, чтобы не блокировать event loop.
     # send_push_to_all делает синхронные HTTP-запросы к push-серверам (Google/Mozilla),
