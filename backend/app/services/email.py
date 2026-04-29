@@ -17,14 +17,17 @@ def _build_html(order: dict) -> tuple[str, str]:
     service = SERVICE_LABELS.get(order.get("service", ""), order.get("service", "—"))
     order_id = order.get("order_id", "—")
 
-    name_row = (
-        f"<tr><td><b>👤 Имя</b></td><td>{_esc(order.get('name'))}</td></tr>"
-        if order.get("name") else ""
-    )
-    comment_row = (
-        f"<tr><td><b>💬 Комментарий</b></td><td>{_esc(order.get('comment'))}</td></tr>"
-        if order.get("comment") else ""
-    )
+    optional_rows = ""
+    if order.get("name"):
+        optional_rows += f"<tr><td><b>👤 Имя</b></td><td>{_esc(order.get('name'))}</td></tr>"
+    if order.get("address"):
+        optional_rows += f"<tr><td><b>📌 Адрес</b></td><td>{_esc(order.get('address'))}</td></tr>"
+    if order.get("count"):
+        optional_rows += f"<tr><td><b>🔢 Количество</b></td><td>{_esc(str(order.get('count')))} устр.</td></tr>"
+    if order.get("scheduled_at"):
+        optional_rows += f"<tr><td><b>🗓 Дата</b></td><td>{_esc(order.get('scheduled_at'))}</td></tr>"
+    if order.get("comment"):
+        optional_rows += f"<tr><td><b>💬 Комментарий</b></td><td>{_esc(order.get('comment'))}</td></tr>"
 
     subject = f"Новая заявка A-SERVICE — {service}"
     body = f"""
@@ -35,11 +38,10 @@ def _build_html(order: dict) -> tuple[str, str]:
   <div style="border:1px solid #ddd;border-top:none;padding:20px;border-radius:0 0 8px 8px">
     <table style="width:100%;border-collapse:collapse;line-height:2">
       <tr><td style="width:35%;font-weight:bold">🏢 Компания</td><td>{_esc(order.get("company"))}</td></tr>
-      {name_row}
       <tr><td><b>📞 Телефон</b></td><td>{_esc(order.get("phone"))}</td></tr>
       <tr><td><b>📍 Город</b></td><td>{_esc(order.get("city"))}</td></tr>
       <tr><td><b>🔧 Услуга</b></td><td>{html_lib.escape(service)}</td></tr>
-      {comment_row}
+      {optional_rows}
       <tr><td><b>🆔 ID заявки</b></td><td><code>{html_lib.escape(order_id)}</code></td></tr>
     </table>
   </div>

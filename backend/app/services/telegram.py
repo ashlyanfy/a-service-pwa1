@@ -17,19 +17,26 @@ def _build_message(order: dict) -> str:
     def esc(v: str) -> str:
         return html.escape(str(v))
 
-    name_line = f"👤 <b>Имя:</b> {esc(order['name'])}\n" if order.get("name") else ""
-    comment_line = f"💬 <b>Комментарий:</b> {esc(order['comment'])}\n" if order.get("comment") else ""
+    lines = [
+        "📋 <b>Новая заявка — A-SERVICE</b>\n",
+        f"🏢 <b>Компания:</b> {esc(order.get('company', '—'))}",
+    ]
+    if order.get("name"):
+        lines.append(f"👤 <b>Имя:</b> {esc(order['name'])}")
+    lines.append(f"📞 <b>Телефон:</b> {esc(order.get('phone', '—'))}")
+    lines.append(f"📍 <b>Город:</b> {esc(order.get('city', '—'))}")
+    lines.append(f"🔧 <b>Услуга:</b> {esc(service)}")
+    if order.get("address"):
+        lines.append(f"📌 <b>Адрес:</b> {esc(order['address'])}")
+    if order.get("count"):
+        lines.append(f"🔢 <b>Количество:</b> {esc(str(order['count']))} устр.")
+    if order.get("scheduled_at"):
+        lines.append(f"🗓 <b>Дата:</b> {esc(order['scheduled_at'])}")
+    if order.get("comment"):
+        lines.append(f"💬 <b>Комментарий:</b> {esc(order['comment'])}")
+    lines.append(f"🆔 <b>ID:</b> <code>{esc(order.get('order_id', '—'))}</code>")
 
-    return (
-        f"📋 <b>Новая заявка — A-SERVICE</b>\n\n"
-        f"🏢 <b>Компания:</b> {esc(order.get('company', '—'))}\n"
-        f"{name_line}"
-        f"📞 <b>Телефон:</b> {esc(order.get('phone', '—'))}\n"
-        f"📍 <b>Город:</b> {esc(order.get('city', '—'))}\n"
-        f"🔧 <b>Услуга:</b> {esc(service)}\n"
-        f"{comment_line}"
-        f"🆔 <b>ID:</b> <code>{esc(order.get('order_id', '—'))}</code>"
-    )
+    return "\n".join(lines)
 
 
 def send_telegram(order: dict) -> None:

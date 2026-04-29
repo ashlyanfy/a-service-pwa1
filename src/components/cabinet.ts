@@ -1,7 +1,9 @@
 // ===== PERSONAL CABINET — Supabase Auth + DB =====
-import { waUrl, SERVICE_LABELS } from '../config';
+import { SERVICE_LABELS } from '../config';
 import { applyPhoneMask } from '../utils/phone';
 import { supabase, APP_URL } from '../lib/supabase';
+
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
 
 interface Order {
   id: string;
@@ -249,45 +251,43 @@ function initOrderForm(): void {
     const serviceLabel = SERVICE_LABELS[service] || service;
     const meta = user.user_metadata as Record<string, string>;
 
-    // Сохраняем в Supabase
-    const { error } = await supabase.from('client_orders').insert({
-      user_id:      user.id,
+    // Отправляем через API (email + Telegram)
+    const res = await fetch(`${API_URL}/api/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:         meta.name    || undefined,
+        company:      meta.company || 'Клиент',
+        phone:        meta.phone   || '+7 000 000 00 00',
+        city,
+        service,
+        address:      address || undefined,
+        count:        count   || undefined,
+        scheduled_at: date    || undefined,
+        comment:      comment || undefined,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({})) as { detail?: string };
+      if (btn) { btn.disabled = false; btn.textContent = 'Отправить заявку'; }
+      showFormError(form as HTMLFormElement, err.detail ?? 'Ошибка отправки. Попробуйте ещё раз.');
+      return;
+    }
+
+    // Сохраняем в Supabase для истории клиента
+    await supabase.from('client_orders').insert({
+      user_id:       user.id,
       city,
       service,
       service_label: serviceLabel,
       count,
       address,
-      scheduled_at: date || null,
-      comment:      comment || null,
+      scheduled_at:  date || null,
+      comment:       comment || null,
     });
 
-    if (error) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Отправить в WhatsApp'; }
-      showFormError(form as HTMLFormElement, 'Ошибка сохранения. Попробуйте ещё раз.');
-      return;
-    }
-
-    // Открываем WhatsApp
-    const dateStr = date
-      ? new Date(date).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-      : 'не указана';
-
-    const msg = [
-      '📋 *Заявка A-SERVICE*', '',
-      `🏢 Компания: ${meta.company || '—'}`,
-      `👤 Имя: ${meta.name || '—'}`,
-      `📞 Телефон: ${meta.phone || '—'}`,
-      `📍 Город: ${city}`,
-      `🔧 Услуга: ${serviceLabel}`,
-      `🔢 Количество: ${count} устр.`,
-      `📌 Адрес: ${address}`,
-      `🗓 Дата: ${dateStr}`,
-      comment ? `💬 Комментарий: ${comment}` : '',
-    ].filter(Boolean).join('\n');
-
-    window.open(waUrl(msg), '_blank');
-
-    if (btn) { btn.disabled = false; btn.textContent = 'Отправить в WhatsApp'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Отправить заявку'; }
     form.reset();
     document.getElementById('order-form-wrap')!.style.display = 'none';
     await loadOrders(user.id);

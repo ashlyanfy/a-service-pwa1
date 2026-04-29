@@ -39,6 +39,10 @@ class OrderRequest(BaseModel):
     city: str
     service: ServiceType
     comment: Optional[str] = None
+    # Поля из личного кабинета
+    address: Optional[str] = None
+    count: Optional[int] = None
+    scheduled_at: Optional[str] = None
 
     @field_validator("company")
     @classmethod
@@ -82,6 +86,23 @@ class OrderRequest(BaseModel):
                 raise ValueError("Комментарий слишком длинный")
             return v or None
         return None
+
+    @field_validator("address")
+    @classmethod
+    def validate_address(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            v = v.strip()
+            if len(v) > 300:
+                raise ValueError("Адрес слишком длинный")
+            return v or None
+        return None
+
+    @field_validator("count")
+    @classmethod
+    def validate_count(cls, v: Optional[int]) -> Optional[int]:
+        if v is not None and not (1 <= v <= 9999):
+            raise ValueError("Количество должно быть от 1 до 9999")
+        return v
 
 
 class OrderResponse(BaseModel):
