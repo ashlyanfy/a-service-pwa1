@@ -17,19 +17,34 @@ export async function loadContent(): Promise<void> {
   ]);
 }
 
+// Теги разрешённые в текстах сайта (только безопасные)
+const ALLOWED_TAGS = /^(em|strong|br|span)$/i;
+
+function safeParse(html: string): DocumentFragment {
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html;
+  // Удаляем все теги кроме разрешённых
+  tpl.content.querySelectorAll('*').forEach(el => {
+    if (!ALLOWED_TAGS.test(el.tagName)) {
+      el.replaceWith(document.createTextNode(el.textContent ?? ''));
+    }
+  });
+  return tpl.content;
+}
+
 async function loadSiteTexts(): Promise<void> {
   const { data } = await supabase.from('site_texts').select('*');
   if (!data) return;
   for (const row of data) {
-    // hero texts
+    // hero texts — допускаем <em> и <br> для форматирования заголовков
     document.querySelectorAll<HTMLElement>(`[data-text="${row.key}"]`).forEach(el => {
-      el.innerHTML = row.value;
+      el.innerHTML = '';
+      el.appendChild(safeParse(row.value));
     });
-    // stats
+    // stats и services — только текст, без HTML
     document.querySelectorAll<HTMLElement>(`[data-stat="${row.key}"]`).forEach(el => {
       el.textContent = row.value;
     });
-    // services
     document.querySelectorAll<HTMLElement>(`[data-service="${row.key}"]`).forEach(el => {
       el.textContent = row.value;
     });
@@ -70,6 +85,10 @@ async function loadExtraServices(): Promise<void> {
   });
 }
 
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 export async function loadPortfolio(): Promise<void> {
   const { data } = await supabase.from('portfolio').select('*').order('position');
   // Only replace static HTML if DB has cards with proper external URLs
@@ -77,15 +96,16 @@ export async function loadPortfolio(): Promise<void> {
   if (validCards.length === 0) return;
   const track = document.getElementById('carousel-track');
   if (!track) return;
+  // Экранируем все данные из БД перед вставкой в HTML
   track.innerHTML = validCards.map(card => `
     <div class="portfolio-card">
       <div class="portfolio-img">
-        <img src="${card.image_url}" alt="${card.title}" loading="lazy">
+        <img src="${esc(card.image_url)}" alt="${esc(card.title)}" loading="lazy">
       </div>
       <div class="portfolio-info">
-        <div class="portfolio-year">${card.year}</div>
-        <div class="portfolio-title">${card.title}</div>
-        <div class="portfolio-subtitle">${card.subtitle}</div>
+        <div class="portfolio-year">${esc(String(card.year))}</div>
+        <div class="portfolio-title">${esc(card.title)}</div>
+        <div class="portfolio-subtitle">${esc(card.subtitle)}</div>
       </div>
     </div>
   `).join('');

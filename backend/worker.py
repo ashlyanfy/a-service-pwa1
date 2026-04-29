@@ -1,1 +1,1 @@
-from app.tasks.celery import celery_app  # noqa: F401
+# Celery worker удалён — не используется

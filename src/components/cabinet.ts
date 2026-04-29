@@ -1,26 +1,20 @@
-// ===== PERSONAL CABINET — CLIENT ONLY =====
+// ===== PERSONAL CABINET — Supabase Auth + DB =====
 import { waUrl, SERVICE_LABELS } from '../config';
-import { applyPhoneMask, isValidEmail } from '../utils/phone';
-
-interface User {
-  name: string;
-  company: string;
-  phone: string;
-  email: string;
-}
+import { applyPhoneMask } from '../utils/phone';
+import { supabase } from '../lib/supabase';
 
 interface Order {
   id: string;
   city: string;
   service: string;
-  serviceLabel: string;
+  service_label: string;
   count: number;
   address: string;
-  date: string;
-  comment: string;
-  timestamp: string;
-  statusUpdatedAt: string;
+  scheduled_at: string | null;
+  comment: string | null;
   status: 'sent' | 'progress' | 'done';
+  status_updated_at: string;
+  created_at: string;
 }
 
 const STATUS_MAP: Record<string, { label: string; cls: string }> = {
@@ -29,8 +23,12 @@ const STATUS_MAP: Record<string, { label: string; cls: string }> = {
   done:     { label: 'Выполнено',   cls: 'status-done' },
 };
 
-function formatElapsed(isoTimestamp: string): string {
-  const diff  = Date.now() - new Date(isoTimestamp).getTime();
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function formatElapsed(iso: string): string {
+  const diff  = Date.now() - new Date(iso).getTime();
   const mins  = Math.floor(diff / 60_000);
   const hours = Math.floor(diff / 3_600_000);
   const days  = Math.floor(diff / 86_400_000);
@@ -38,7 +36,7 @@ function formatElapsed(isoTimestamp: string): string {
   if (mins < 60)  return `${mins} мин.`;
   if (hours < 24) return `${hours} ч.`;
   if (days < 30)  return `${days} дн.`;
-  return new Date(isoTimestamp).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
+  return new Date(iso).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
 }
 
 function tickTimers(): void {
@@ -48,47 +46,46 @@ function tickTimers(): void {
   });
 }
 
-function getSavedUser(): User | null {
-  try { return JSON.parse(localStorage.getItem('as_user') || 'null'); }
-  catch { return null; }
+// ── Auth helpers ──────────────────────────────────────────────────────────────
+
+function showFormError(form: HTMLFormElement, msg: string): void {
+  let el = form.querySelector<HTMLElement>('.form-global-error');
+  if (!el) {
+    el = document.createElement('p');
+    el.className = 'form-global-error';
+    form.prepend(el);
+  }
+  el.textContent = msg;
 }
 
-function saveUser(u: User): void {
-  localStorage.setItem('as_user', JSON.stringify(u));
+function clearFormError(form: HTMLFormElement): void {
+  form.querySelector('.form-global-error')?.remove();
 }
 
-function getOrders(): Order[] {
-  try {
-    return JSON.parse(localStorage.getItem('as_orders') || '[]') as Order[];
-  } catch { return []; }
-}
-
-function saveOrder(o: Order): void {
-  try {
-    const arr: Order[] = JSON.parse(localStorage.getItem('as_orders') || '[]');
-    arr.unshift(o);
-    localStorage.setItem('as_orders', JSON.stringify(arr));
-  } catch { /* storage quota exceeded */ }
-}
-
-function genId(): string {
-  return 'AS-' + Date.now().toString(36).toUpperCase().slice(-6);
-}
-
-function esc(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+// ── Init ──────────────────────────────────────────────────────────────────────
 
 export function initCabinet(): void {
   initAuthTabs();
   initLoginForm();
   initRegisterForm();
+  initForgotPassword();
   initLogout();
   initOrderForm();
   setInterval(tickTimers, 60_000);
-  const saved = getSavedUser();
-  if (saved) showDashboard(saved);
+
+  // Проверяем сессию при загрузке
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) showDashboard(data.session.user);
+  });
+
+  // Слушаем изменения авторизации
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session) showDashboard(session.user);
+    else showAuthScreen();
+  });
 }
+
+// ── Auth Tabs ─────────────────────────────────────────────────────────────────
 
 function initAuthTabs(): void {
   document.querySelectorAll('.auth-tab').forEach((tab) => {
@@ -102,55 +99,111 @@ function initAuthTabs(): void {
   });
 }
 
+// ── Login ─────────────────────────────────────────────────────────────────────
+
 function initLoginForm(): void {
   const form = document.getElementById('form-login') as HTMLFormElement | null;
   if (!form) return;
-  form.addEventListener('submit', (e) => {
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    clearFormError(form);
     const email = (form.querySelector('#l-email') as HTMLInputElement).value.trim();
     const pass  = (form.querySelector('#l-password') as HTMLInputElement).value;
     if (!email || !pass) { showFormError(form, 'Заполните все поля'); return; }
-    if (!isValidEmail(email)) { showFormError(form, 'Введите корректный email'); return; }
-    const saved = getSavedUser();
-    loginUser(saved ?? { name: email.split('@')[0], company: '', phone: '', email });
+
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Вход...'; }
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+
+    if (btn) { btn.disabled = false; btn.textContent = 'Войти'; }
+    if (error) showFormError(form, 'Неверный email или пароль');
   });
 }
+
+// ── Register ──────────────────────────────────────────────────────────────────
 
 function initRegisterForm(): void {
   const form = document.getElementById('form-register') as HTMLFormElement | null;
   if (!form) return;
+
   const phoneInput = form.querySelector<HTMLInputElement>('#r-phone');
   if (phoneInput) applyPhoneMask(phoneInput);
-  form.addEventListener('submit', (e) => {
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    clearFormError(form);
+
     const name    = (form.querySelector('#r-name')     as HTMLInputElement).value.trim();
     const company = (form.querySelector('#r-company')  as HTMLInputElement).value.trim();
     const phone   = (form.querySelector('#r-phone')    as HTMLInputElement).value.trim();
     const email   = (form.querySelector('#r-email')    as HTMLInputElement).value.trim();
     const pass    = (form.querySelector('#r-password') as HTMLInputElement).value;
+
     if (!name || !email || !pass) { showFormError(form, 'Заполните обязательные поля'); return; }
-    if (!isValidEmail(email)) { showFormError(form, 'Введите корректный email'); return; }
-    if (pass.length < 6) { showFormError(form, 'Пароль должен быть не менее 6 символов'); return; }
-    loginUser({ name, company, phone, email });
+    if (pass.length < 6) { showFormError(form, 'Пароль — минимум 6 символов'); return; }
+
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Регистрация...'; }
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password: pass,
+      options: {
+        data: { name, company, phone },
+      },
+    });
+
+    if (btn) { btn.disabled = false; btn.textContent = 'Зарегистрироваться'; }
+
+    if (error) {
+      showFormError(form, error.message === 'User already registered'
+        ? 'Этот email уже зарегистрирован'
+        : 'Ошибка регистрации. Попробуйте ещё раз.');
+    } else {
+      showFormError(form, '✅ На почту отправлено письмо для подтверждения');
+    }
   });
 }
 
-function showFormError(form: HTMLFormElement, msg: string): void {
-  let el = form.querySelector<HTMLElement>('.form-global-error');
-  if (!el) {
-    el = document.createElement('p');
-    el.className = 'form-global-error';
-    form.prepend(el);
-  }
-  el.textContent = msg;
+// ── Forgot Password ───────────────────────────────────────────────────────────
+
+function initForgotPassword(): void {
+  // Добавляем ссылку "Забыли пароль?" под кнопкой входа
+  const loginForm = document.getElementById('form-login');
+  if (!loginForm) return;
+
+  const link = document.createElement('p');
+  link.className = 'form-note';
+  link.style.textAlign = 'center';
+  link.style.marginTop = '8px';
+  link.innerHTML = '<a href="#" id="forgot-link" style="color:var(--brand-3);font-size:13px;">Забыли пароль?</a>';
+  loginForm.appendChild(link);
+
+  document.getElementById('forgot-link')?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const email = (document.querySelector('#l-email') as HTMLInputElement)?.value.trim();
+    if (!email) {
+      alert('Введите ваш email в поле выше');
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    if (error) alert('Ошибка: ' + error.message);
+    else alert(`✅ Письмо для сброса пароля отправлено на ${email}`);
+  });
 }
 
+// ── Logout ────────────────────────────────────────────────────────────────────
+
 function initLogout(): void {
-  document.getElementById('logout-btn')?.addEventListener('click', () => {
-    localStorage.removeItem('as_user');
+  document.getElementById('logout-btn')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
     showAuthScreen();
   });
 }
+
+// ── Order Form ────────────────────────────────────────────────────────────────
 
 function initOrderForm(): void {
   document.getElementById('new-order-btn')?.addEventListener('click', () => {
@@ -169,76 +222,112 @@ function initOrderForm(): void {
   const form = document.getElementById('order-form') as HTMLFormElement | null;
   if (!form) return;
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const user    = getSavedUser();
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const city    = (form.querySelector('#o-city')    as HTMLSelectElement).value;
     const service = (form.querySelector('#o-service') as HTMLSelectElement).value;
-    const count   = (form.querySelector('#o-count')   as HTMLInputElement).value;
+    const count   = parseInt((form.querySelector('#o-count') as HTMLInputElement).value) || 1;
     const address = (form.querySelector('#o-address') as HTMLInputElement).value.trim();
     const date    = (form.querySelector('#o-date')    as HTMLInputElement).value;
     const comment = (form.querySelector('#o-comment') as HTMLTextAreaElement).value.trim();
 
-    if (!city || !service || !count || !address) {
-      showFormError(form as unknown as HTMLFormElement, 'Заполните обязательные поля (*)');
+    if (!city || !service || !address) {
+      showFormError(form as HTMLFormElement, 'Заполните обязательные поля (*)');
       return;
     }
 
-    const sLabel  = SERVICE_LABELS[service] || service;
+    const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.textContent = 'Отправка...'; }
+
+    const serviceLabel = SERVICE_LABELS[service] || service;
+    const meta = user.user_metadata as Record<string, string>;
+
+    // Сохраняем в Supabase
+    const { error } = await supabase.from('client_orders').insert({
+      user_id:      user.id,
+      city,
+      service,
+      service_label: serviceLabel,
+      count,
+      address,
+      scheduled_at: date || null,
+      comment:      comment || null,
+    });
+
+    if (error) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Отправить в WhatsApp'; }
+      showFormError(form as HTMLFormElement, 'Ошибка сохранения. Попробуйте ещё раз.');
+      return;
+    }
+
+    // Открываем WhatsApp
     const dateStr = date
       ? new Date(date).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
       : 'не указана';
-    const now = new Date().toISOString();
 
     const msg = [
       '📋 *Заявка A-SERVICE*', '',
-      `🏢 Компания: ${user?.company || '—'}`,
-      `👤 Имя: ${user?.name || '—'}`,
-      `📞 Телефон: ${user?.phone || '—'}`,
+      `🏢 Компания: ${meta.company || '—'}`,
+      `👤 Имя: ${meta.name || '—'}`,
+      `📞 Телефон: ${meta.phone || '—'}`,
       `📍 Город: ${city}`,
-      `🔧 Услуга: ${sLabel}`,
+      `🔧 Услуга: ${serviceLabel}`,
       `🔢 Количество: ${count} устр.`,
       `📌 Адрес: ${address}`,
       `🗓 Дата: ${dateStr}`,
       comment ? `💬 Комментарий: ${comment}` : '',
     ].filter(Boolean).join('\n');
 
-    const order: Order = {
-      id: genId(), city, service, serviceLabel: sLabel,
-      count: Number(count), address, date: dateStr,
-      comment, timestamp: now, statusUpdatedAt: now, status: 'sent',
-    };
-    saveOrder(order);
     window.open(waUrl(msg), '_blank');
 
-    renderStats(getOrders());
-    renderTable(getOrders());
-    const wrap = document.getElementById('order-form-wrap');
-    if (wrap) wrap.style.display = 'none';
+    if (btn) { btn.disabled = false; btn.textContent = 'Отправить в WhatsApp'; }
     form.reset();
+    document.getElementById('order-form-wrap')!.style.display = 'none';
+    await loadOrders(user.id);
   });
 }
 
-function loginUser(user: User): void {
-  saveUser(user);
-  showDashboard(user);
-}
+// ── Dashboard ─────────────────────────────────────────────────────────────────
 
-function showDashboard(user: User): void {
+async function showDashboard(user: { id: string; user_metadata: Record<string, unknown> }): Promise<void> {
   document.getElementById('client-auth-screen')?.style.setProperty('display', 'none');
   const dash = document.getElementById('client-dashboard');
   if (!dash) return;
   dash.classList.add('visible');
+
+  const meta = user.user_metadata as Record<string, string>;
   const nameEl = document.getElementById('dash-user-name');
-  if (nameEl) nameEl.textContent = user.name;
-  const orders = getOrders();
-  renderStats(orders);
-  renderTable(orders);
+  if (nameEl) nameEl.textContent = meta.name || 'Клиент';
+
+  await loadOrders(user.id);
 }
 
 function showAuthScreen(): void {
   document.getElementById('client-auth-screen')?.style.removeProperty('display');
   document.getElementById('client-dashboard')?.classList.remove('visible');
+}
+
+// ── Orders ────────────────────────────────────────────────────────────────────
+
+async function loadOrders(userId: string): Promise<void> {
+  const { data, error } = await supabase
+    .from('client_orders')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Failed to load orders:', error);
+    return;
+  }
+
+  const orders = (data || []) as Order[];
+  renderStats(orders);
+  renderTable(orders);
 }
 
 function renderStats(orders: Order[]): void {
@@ -257,15 +346,15 @@ function renderTable(orders: Order[]): void {
     return;
   }
   tbody.innerHTML = orders.map((o) => {
-    const created = new Date(o.timestamp).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
+    const created = new Date(o.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
     const s = STATUS_MAP[o.status] ?? STATUS_MAP.sent;
-    const timerTs = o.statusUpdatedAt || o.timestamp;
+    const timerTs = o.status_updated_at || o.created_at;
     const elapsed = formatElapsed(timerTs);
     const timerLabel = o.status === 'done' ? `выполнено ${elapsed}` : o.status === 'progress' ? `в работе ${elapsed}` : `ожидает ${elapsed}`;
     return `<tr>
-      <td><span class="order-id">${esc(o.id)}</span></td>
+      <td><span class="order-id">AS-${esc(o.id.slice(0,6).toUpperCase())}</span></td>
       <td>${esc(o.city)}</td>
-      <td>${esc(o.serviceLabel)}</td>
+      <td>${esc(o.service_label || o.service)}</td>
       <td>${o.count}</td>
       <td>${created}</td>
       <td><div class="status-cell"><span class="status-badge ${s.cls}">${s.label}</span><span class="order-timer" data-timer="${timerTs}">${timerLabel}</span></div></td>
@@ -276,8 +365,6 @@ function renderTable(orders: Order[]): void {
 export function showCabinet(): void {
   document.querySelectorAll<HTMLElement>('.main-content').forEach((el) => { el.style.display = 'none'; });
   document.getElementById('cabinet')?.classList.add('visible');
-  const user = getSavedUser();
-  if (user) showDashboard(user);
 }
 
 export function showMainSite(): void {

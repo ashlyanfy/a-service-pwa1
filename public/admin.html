@@ -1082,12 +1082,39 @@ document.getElementById('portfolio-modal').addEventListener('click', e => { if (
 document.getElementById('m-file').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
+
+  // Валидация MIME-типа
+  const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  if (!ALLOWED_MIME.includes(file.type)) {
+    toast('Разрешены только JPG, PNG, WebP, GIF', 'error');
+    e.target.value = '';
+    return;
+  }
+
+  // Валидация размера: макс. 5 MB
+  const MAX_SIZE = 5 * 1024 * 1024;
+  if (file.size > MAX_SIZE) {
+    toast('Файл слишком большой (макс. 5 МБ)', 'error');
+    e.target.value = '';
+    return;
+  }
+
+  // Валидация расширения
+  const ALLOWED_EXT = /\.(jpg|jpeg|png|webp|gif)$/i;
+  if (!ALLOWED_EXT.test(file.name)) {
+    toast('Недопустимое расширение файла', 'error');
+    e.target.value = '';
+    return;
+  }
+
   const prev = document.getElementById('upload-preview');
   prev.src = URL.createObjectURL(file);
   prev.style.display = 'block';
   const saveBtn = document.getElementById('modal-save');
   saveBtn.disabled = true; saveBtn.textContent = 'Загрузка...';
-  const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  // Безопасное имя файла — только ASCII символы
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 100);
+  const fileName = `${Date.now()}-${safeName}`;
   const { data, error } = await sb.storage.from('portfolio').upload(fileName, file, { upsert: true });
   saveBtn.disabled = false; saveBtn.textContent = 'Сохранить';
   if (error) { toast('Ошибка загрузки: ' + error.message, 'error'); return; }
