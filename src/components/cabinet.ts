@@ -1,7 +1,7 @@
 // ===== PERSONAL CABINET — Supabase Auth + DB =====
 import { waUrl, SERVICE_LABELS } from '../config';
 import { applyPhoneMask } from '../utils/phone';
-import { supabase } from '../lib/supabase';
+import { supabase, APP_URL } from '../lib/supabase';
 
 interface Order {
   id: string;
@@ -152,6 +152,7 @@ function initRegisterForm(): void {
       password: pass,
       options: {
         data: { name, company, phone },
+        emailRedirectTo: `${APP_URL}/`,
       },
     });
 
@@ -188,7 +189,9 @@ function initForgotPassword(): void {
       alert('Введите ваш email в поле выше');
       return;
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${APP_URL}/`,
+    });
     if (error) alert('Ошибка: ' + error.message);
     else alert(`✅ Письмо для сброса пароля отправлено на ${email}`);
   });
