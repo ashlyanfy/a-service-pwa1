@@ -73,6 +73,7 @@ export function initCabinet(): void {
   initForgotPassword();
   initLogout();
   initOrderForm();
+  initPasswordResetModal();
   setInterval(tickTimers, 60_000);
 
   // Проверяем сессию при загрузке
@@ -81,7 +82,12 @@ export function initCabinet(): void {
   });
 
   // Слушаем изменения авторизации
-  supabase.auth.onAuthStateChange((_event, session) => {
+  supabase.auth.onAuthStateChange((event, session) => {
+    // Ссылка для сброса пароля — показываем модал
+    if (event === 'PASSWORD_RECOVERY') {
+      showPasswordResetModal();
+      return;
+    }
     if (session) showDashboard(session.user);
     else showAuthScreen();
   });
@@ -197,6 +203,96 @@ function initForgotPassword(): void {
     if (error) alert('Ошибка: ' + error.message);
     else alert(`✅ Письмо для сброса пароля отправлено на ${email}`);
   });
+}
+
+// ── Password Reset Modal ──────────────────────────────────────────────────────
+
+function initPasswordResetModal(): void {
+  // Создаём модал динамически
+  const modal = document.createElement('div');
+  modal.id = 'reset-password-modal';
+  modal.style.cssText = `
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
+    backdrop-filter:blur(6px);z-index:300;
+    display:none;align-items:center;justify-content:center;padding:20px;
+  `;
+  modal.innerHTML = `
+    <div style="
+      width:100%;max-width:420px;background:rgba(12,9,24,0.97);
+      border:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:32px;
+    ">
+      <h3 style="font-size:1.25rem;font-weight:800;margin-bottom:8px;">Новый пароль</h3>
+      <p style="color:var(--muted);font-size:14px;margin-bottom:24px;">
+        Введите новый пароль для вашего аккаунта
+      </p>
+      <div class="form-group" style="display:grid;gap:6px;margin-bottom:14px;">
+        <label class="form-label">Новый пароль *</label>
+        <input id="reset-new-password" type="password" class="form-input"
+          placeholder="Минимум 6 символов">
+      </div>
+      <div class="form-group" style="display:grid;gap:6px;margin-bottom:20px;">
+        <label class="form-label">Повторите пароль *</label>
+        <input id="reset-confirm-password" type="password" class="form-input"
+          placeholder="Повторите пароль">
+      </div>
+      <p id="reset-error" style="color:#f87171;font-size:13px;margin-bottom:12px;display:none;"></p>
+      <button id="reset-submit-btn" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
+        Сохранить пароль
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  document.getElementById('reset-submit-btn')?.addEventListener('click', async () => {
+    const newPass     = (document.getElementById('reset-new-password') as HTMLInputElement).value;
+    const confirmPass = (document.getElementById('reset-confirm-password') as HTMLInputElement).value;
+    const errEl       = document.getElementById('reset-error')!;
+
+    errEl.style.display = 'none';
+
+    if (newPass.length < 6) {
+      errEl.textContent = 'Пароль должен быть не менее 6 символов';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (newPass !== confirmPass) {
+      errEl.textContent = 'Пароли не совпадают';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('reset-submit-btn') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Сохранение...';
+
+    const { error } = await supabase.auth.updateUser({ password: newPass });
+
+    if (error) {
+      errEl.textContent = 'Ошибка: ' + error.message;
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Сохранить пароль';
+    } else {
+      hidePasswordResetModal();
+      alert('✅ Пароль успешно изменён! Теперь войдите с новым паролем.');
+      await supabase.auth.signOut();
+    }
+  });
+}
+
+function showPasswordResetModal(): void {
+  // Открываем кабинет если не открыт
+  const cabinet = document.getElementById('cabinet');
+  if (!cabinet?.classList.contains('visible')) {
+    showCabinet();
+  }
+  const modal = document.getElementById('reset-password-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function hidePasswordResetModal(): void {
+  const modal = document.getElementById('reset-password-modal');
+  if (modal) modal.style.display = 'none';
 }
 
 // ── Logout ────────────────────────────────────────────────────────────────────
