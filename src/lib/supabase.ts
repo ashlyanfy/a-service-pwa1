@@ -11,4 +11,12 @@ const SUPABASE_ANON = (import.meta.env.VITE_SUPABASE_ANON_KEY as string)
 export const APP_URL: string = (import.meta.env.VITE_APP_URL as string)
   || window.location.origin;
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON, {
+  auth: {
+    // Токены хранятся в localStorage — стандарт для SPA
+    // XSS защита: CSP + экранирование всего innerHTML (уже сделано)
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
