@@ -700,44 +700,204 @@ footer {
 .modal-close:hover { background: rgba(255,255,255,0.14); }
 .modal-close svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.5; }
 
-/* === Cabinet === */
+/* ═══════════════════════════════════════════════
+   CABINET — полная адаптивность ПК / планшет / телефон
+   ═══════════════════════════════════════════════ */
+
 #cabinet {
   display: none;
-  padding: var(--nav-h) 0 24px;
   min-height: 100vh;
   position: relative;
   z-index: 1;
+  padding-top: var(--nav-h);
 }
-.cabinet-inner { padding: 32px 0; }
 #cabinet.visible { display: block; }
-.cabinet-role-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 28px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  padding-bottom: 16px;
-  width: 100%;
+
+/* Внутренний враппер */
+.cabinet-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
 }
-.auth-screen { width: 100%; max-width: 520px; }
-.dash-stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ── Авторизация ── */
+.auth-screen {
+  max-width: 480px;
+  margin: 40px auto 0;
+  padding: 36px 32px;
+  border-radius: 28px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  box-shadow: var(--shadow);
+}
+.auth-screen-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.auth-screen-sub {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+/* ── Дашборд ── */
+.dashboard { display: none; }
+.dashboard.visible { display: block; }
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 28px 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 28px;
+}
+.dashboard-header-left { display: flex; flex-direction: column; gap: 4px; }
+.dashboard-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--brand-3);
+}
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.dashboard-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ── Статы ── */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.dash-stat {
+  padding: 20px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.05);
+  text-align: center;
+  transition: border-color .2s, background .2s;
+}
+.dash-stat:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(168,154,246,0.25);
+}
+.dash-stat-value { font-size: 32px; font-weight: 800; line-height: 1; }
+.dash-stat-label { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+
+/* ── Форма заявки ── */
 .order-form-wrap {
-  padding: 24px;
+  padding: 28px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
   margin-bottom: 24px;
+  box-shadow: var(--shadow);
 }
-.order-form-wrap h3 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+
+/* На десктопе поля формы — 2 колонки */
+.order-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.order-form-grid .form-group-full {
+  grid-column: 1 / -1;
+}
+
+/* ── Таблица заявок ── */
+.orders-section {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  overflow: hidden;
+}
+.orders-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.orders-section-title {
+  font-size: 15px;
+  font-weight: 700;
+}
 .orders-table-wrap { overflow-x: auto; }
 .orders-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.orders-table th { padding: 10px 14px; text-align: left; color: var(--muted); font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 13px; }
-.orders-table td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.orders-table th {
+  padding: 11px 16px;
+  text-align: left;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  white-space: nowrap;
+}
+.orders-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.orders-table tr:last-child td { border-bottom: none; }
+.orders-table tr:hover td { background: rgba(255,255,255,0.03); }
+.order-id {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--brand-3);
+  background: rgba(168,154,246,0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
 .status-cell { display: flex; flex-direction: column; gap: 4px; }
-.status-badge { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; width: fit-content; }
-.status-new { background: rgba(168,154,246,0.15); color: var(--brand-3); }
-.status-progress { background: rgba(255,193,7,0.15); color: #ffc107; }
-.status-done { background: rgba(40,199,111,0.15); color: #28c76f; }
-.order-timer { font-size: 11px; color: var(--muted); padding-left: 2px; }
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  width: fit-content;
+  letter-spacing: .04em;
+}
+.status-new      { background: rgba(168,154,246,0.15); color: var(--brand-3); }
+.status-progress { background: rgba(255,193,7,0.12);   color: #ffc107; }
+.status-done     { background: rgba(40,199,111,0.12);  color: #28c76f; }
+.order-timer { font-size: 11px; color: var(--muted); }
+
+/* ── Пустое состояние ── */
+.orders-empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--muted);
+}
+.orders-empty-icon {
+  width: 56px; height: 56px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(106,88,215,0.2), rgba(62,45,143,0.12));
+  border: 1px solid rgba(168,154,246,0.2);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+  color: var(--brand-3);
+}
+.orders-empty h4 { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.orders-empty p  { font-size: 14px; line-height: 1.6; }
+
+/* ── Прочее ── */
+.cabinet-inner { padding: 32px 0; }
+.cabinet-role-tabs { display: none; }
+.dash-stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.order-form-wrap h3 { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
 .executor-placeholder { padding: 40px 0; color: var(--muted); font-size: 16px; }
 
 /* === SW Update Banner === */
@@ -1021,10 +1181,36 @@ footer {
   margin-top: 8px;
 }
 
-/* === Responsive cabinet === */
-@media (max-width: 640px) {
+/* ── Cabinet responsive ── */
+
+/* Планшет (768px–1024px) */
+@media (max-width: 1024px) {
   .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
-  .dashboard-header { flex-direction: column; }
+  .order-form-grid { grid-template-columns: 1fr 1fr; }
+  .cabinet-wrap { padding: 32px 20px 60px; }
+  .dash-stat-value { font-size: 28px; }
+}
+
+/* Мобильный (< 768px) */
+@media (max-width: 768px) {
+  .cabinet-wrap { padding: 24px 16px 100px; }
+  .dashboard-header { flex-direction: column; align-items: flex-start; }
+  .dashboard-title { font-size: 22px; }
+  .dashboard-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .dash-stat { padding: 16px 12px; }
+  .dash-stat-value { font-size: 26px; }
+  .order-form-grid { grid-template-columns: 1fr; }
+  .order-form-wrap { padding: 18px; }
+  .orders-table th, .orders-table td { padding: 10px 12px; }
+  .auth-screen { padding: 24px 18px; margin-top: 20px; }
+  .auth-screen-title { font-size: 20px; }
+}
+
+/* Маленький мобильный (< 480px) */
+@media (max-width: 480px) {
+  .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-actions { width: 100%; }
+  .dashboard-actions .btn { flex: 1; justify-content: center; }
 }
 
 /* === Contact form success message === */

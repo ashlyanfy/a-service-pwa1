@@ -820,31 +820,12 @@
 
 <!-- ===== PERSONAL CABINET ===== -->
 <div id="cabinet">
-  <div class="container">
-
-    <!-- Role tabs -->
-    <div class="cabinet-role-tabs" style="display:none;">
-      <button class="cabinet-role-tab active" data-role="client">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
-        </svg>
-        Клиент
-      </button>
-      <button class="cabinet-role-tab" data-role="executor" style="display:none;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-        Исполнитель
-      </button>
-    </div>
+  <div class="cabinet-wrap">
 
     <!-- CLIENT: Auth Screen -->
     <div id="client-auth-screen" class="auth-screen">
-      <div style="margin-bottom:2rem;">
-        <p class="section-eyebrow" style="justify-content:flex-start;">Личный кабинет</p>
-        <h2 style="font-size:1.75rem;font-weight:800;">Вход в систему</h2>
-      </div>
+      <p class="auth-screen-title">Вход в систему</p>
+      <p class="auth-screen-sub">Личный кабинет A-SERVICE</p>
 
       <div class="auth-tabs">
         <button class="auth-tab active" data-tab="login">Вход</button>
@@ -895,11 +876,11 @@
     <!-- CLIENT: Dashboard -->
     <div id="client-dashboard" class="dashboard">
       <div class="dashboard-header">
-        <div>
-          <p class="section-eyebrow" style="justify-content:flex-start;">Личный кабинет</p>
+        <div class="dashboard-header-left">
+          <span class="dashboard-eyebrow">Личный кабинет</span>
           <h2 class="dashboard-title">Добро пожаловать, <span id="dash-user-name">—</span></h2>
         </div>
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        <div class="dashboard-actions">
           <button id="new-order-btn" class="btn btn-primary btn-sm">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
@@ -941,7 +922,7 @@
           <button id="close-order-form" class="btn-icon-close" aria-label="Закрыть">✕</button>
         </div>
         <form id="order-form" class="form" novalidate>
-          <div class="form-row">
+          <div class="order-form-grid">
             <div class="form-group">
               <label class="form-label" for="o-city">Город *</label>
               <select id="o-city" class="form-select" required>
@@ -956,14 +937,15 @@
               <label class="form-label" for="o-service">Тип услуги *</label>
               <select id="o-service" class="form-select" required>
                 <option value="">Выберите услугу</option>
+                <option value="atm-install">Монтаж банкоматов</option>
                 <option value="atm-uninstall">Демонтаж банкоматов</option>
                 <option value="terminal-uninstall">Демонтаж терминалов</option>
                 <option value="service">Обслуживание</option>
                 <option value="logistics">Логистика</option>
+                <option value="painting">Покраска и ребрендинг</option>
+                <option value="other">Другое</option>
               </select>
             </div>
-          </div>
-          <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="o-count">Количество устройств *</label>
               <input type="number" id="o-count" class="form-input" placeholder="1" min="1" required>
@@ -972,16 +954,16 @@
               <label class="form-label" for="o-date">Дата и время</label>
               <input type="datetime-local" id="o-date" class="form-input">
             </div>
+            <div class="form-group form-group-full">
+              <label class="form-label" for="o-address">Адрес *</label>
+              <input type="text" id="o-address" class="form-input" placeholder="ул. Абая 10, офис 205" required>
+            </div>
+            <div class="form-group form-group-full">
+              <label class="form-label" for="o-comment">Комментарий</label>
+              <textarea id="o-comment" class="form-textarea" rows="3" placeholder="Дополнительные детали..."></textarea>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="o-address">Адрес *</label>
-            <input type="text" id="o-address" class="form-input" placeholder="ул. Абая 10, офис 205" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="o-comment">Комментарий</label>
-            <textarea id="o-comment" class="form-textarea" rows="3" placeholder="Дополнительные детали..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
+          <button type="submit" class="btn btn-primary" style="margin-top:8px;">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
@@ -991,11 +973,11 @@
       </div>
 
       <!-- Orders Table -->
-      <div class="orders-table-wrap">
-        <div class="orders-table-header">
-          <h3 style="font-size:1rem;font-weight:600;">Мои заявки</h3>
+      <div class="orders-section">
+        <div class="orders-section-header">
+          <span class="orders-section-title">Мои заявки</span>
         </div>
-        <div style="overflow-x:auto;">
+        <div class="orders-table-wrap">
           <table class="orders-table">
             <thead>
               <tr>
@@ -1015,9 +997,8 @@
       </div>
     </div>
 
-
-  </div>
-</div>
+  </div><!-- /.cabinet-wrap -->
+</div><!-- /#cabinet -->
 
 <!-- ===== FOOTER ===== -->
 <footer class="main-content">
